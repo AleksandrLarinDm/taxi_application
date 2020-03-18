@@ -1,5 +1,5 @@
+import '../screens/map_page.dart';
 import '../screens/calendar_page.dart';
-import '../screens/main_page.dart';
 import '../screens/settings_page.dart';
 
 typedef T Constructor<T>();
@@ -12,7 +12,7 @@ void register<T>(Constructor<T> constructor) {
 
 class ClassBuilder {
   static void registerClasses() {
-    register<MainPage>(() => MainPage());
+    register<MapPage>(() => MapPage());
     register<CalendarPage>(() => CalendarPage());
     register<SettingsPage>(() => SettingsPage());
   }

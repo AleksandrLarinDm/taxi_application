@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:global_state/global_state.dart';
 import 'package:kf_drawer/kf_drawer.dart';
 import 'utils/class_builder.dart';
 import 'screens/auth_page.dart';
 import 'screens/calendar_page.dart';
-import 'screens/main_page.dart';
+import 'screens/map_page.dart';
+
 import 'package:taxiapplication/screens/newuser.page.dart';
 
 void main() {
+  store['visible']=true;
   ClassBuilder.registerClasses();
   runApp(MyApp());
 }
@@ -41,13 +44,9 @@ class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _drawerController = KFDrawerController(
-      initialPage: ClassBuilder.fromString('MainPage'),
+      initialPage: ClassBuilder.fromString('MapPage'),
       items: [
-        KFDrawerItem.initWithPage(
-          text: Text('MAIN', style: TextStyle(color: Colors.white)),
-          icon: Icon(Icons.home, color: Colors.white),
-          page: MainPage(),
-        ),
+
         KFDrawerItem.initWithPage(
           text: Text(
             'CALENDAR',
