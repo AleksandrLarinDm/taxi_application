@@ -15,7 +15,7 @@ class _SingUpState extends State<SingUp> {
           child: Text(
             'Sing up',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.black38,
               fontSize: 38,
               fontWeight: FontWeight.w900,
             ),

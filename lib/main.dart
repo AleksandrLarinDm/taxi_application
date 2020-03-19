@@ -10,6 +10,7 @@ import 'screens/map_page.dart';
 import 'package:taxiapplication/screens/newuser.page.dart';
 
 void main() {
+  store['status']=0;
   store['visible']=true;
   ClassBuilder.registerClasses();
   runApp(MyApp());

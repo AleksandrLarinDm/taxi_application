@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:global_state/global_state.dart';
 import 'package:taxiapplication/screens/submit.page.dart';
+import 'package:http/http.dart' as http;
 
 class ButtonNewUser extends StatefulWidget {
   @override
@@ -7,6 +10,14 @@ class ButtonNewUser extends StatefulWidget {
 }
 
 class _ButtonNewUserState extends State<ButtonNewUser> {
+  String url = "http://192.168.223.102:3000/auth/signup";
+  Future<String> makeRequest(String phonenumber, String name) async {
+    final response = await http.post(Uri.encodeFull(url), body: {"phone":"$phonenumber","name":"$name"});
+    int status = response.statusCode;
+    store['status'] = status;
+    print(store['status']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -15,12 +26,17 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
         alignment: Alignment.bottomRight,
         height: 50,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            color: Colors.black, borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white, width: 3.0)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white, width: 3.0)),
         child: FlatButton(
-          color: Colors.black12,
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitPage()));
+          onPressed: ()async{
+           await makeRequest(store['phone'], store['name']);
+           if(store['status']==200){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitPage()));
+            }
+            else{
+              print("Error");
+            }
+            print(store['phone']);
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

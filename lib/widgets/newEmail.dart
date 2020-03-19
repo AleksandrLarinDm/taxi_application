@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:global_state/global_state.dart';
 
 class NewEmail extends StatefulWidget{
   @override
@@ -6,6 +7,8 @@ class NewEmail extends StatefulWidget{
 }
 
 class _NewEmailState extends State<NewEmail>{
+  String phone = "";
+  TextEditingController myController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -14,6 +17,7 @@ class _NewEmailState extends State<NewEmail>{
         height: 60,
         width: MediaQuery.of(context).size.width,
         child: TextField(
+          controller: myController,
           keyboardType: TextInputType.phone,
           style: TextStyle(
             color: Color.fromRGBO(246, 238, 223, 1)
@@ -27,7 +31,10 @@ class _NewEmailState extends State<NewEmail>{
             labelStyle: TextStyle(
               color: Color.fromRGBO(246, 238, 223, 1)
             )
-          ),
+          ),onChanged: (text){
+            phone = myController.text;
+            store['phone']=phone;
+        },
         ),
       ),
     );
