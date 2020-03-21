@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:kf_drawer/kf_drawer.dart';
-import 'package:taxiapplication/widgets/mapWidgets/containerWithInputs.dart';
 import 'package:taxiapplication/widgets/mapWidgets/mapContainer.dart';
 
 class MapPage extends KFDrawerContent {
@@ -27,13 +26,14 @@ class MapPageState extends State<MapPage> {
         children: <Widget>[
 
           MapContainer(),
-          ContainerWithInputs(),
           ClipRRect(
+
             borderRadius: BorderRadius.all(Radius.circular(32.0)),
             child: Material(
               shadowColor: Colors.transparent,
               color: Colors.transparent,
               child: IconButton(
+                padding: EdgeInsets.only(top: 20),
                 icon: Icon(
                   Icons.menu,
                   color: Colors.black,
@@ -44,6 +44,7 @@ class MapPageState extends State<MapPage> {
           ),
         ],
       ),
+
 
     );
   }

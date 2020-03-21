@@ -1,16 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kf_drawer/kf_drawer.dart';
 import 'utils/class_builder.dart';
 import 'screens/auth_page.dart';
 import 'screens/calendar_page.dart';
 import 'screens/map_page.dart';
-
+import 'dart:io';
 import 'package:taxiapplication/screens/newuser.page.dart';
 
 void main() {
-  store['visible']=true;
+  store['current']="";
+  store['distenation']="";
+  store['currentBool']=true;
+  store['distenationBool']=false;
+  store['currentController']=new TextEditingController();
+  store['distenationController']=new TextEditingController();
+  store['apikey']="AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
   ClassBuilder.registerClasses();
   runApp(MyApp());
 }
@@ -23,13 +30,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+
       home: NewUser(),
         debugShowCheckedModeBanner: false
     );
   }
 }
 
-class MainWidget extends StatefulWidget {
+class MainWidget extends StatefulWidget{
+
   MainWidget({Key key, this.title}) : super(key: key);
   final String title;
 
