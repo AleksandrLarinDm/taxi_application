@@ -17,6 +17,7 @@ void main() {
   store['distenationBool']=false;
   store['currentController']=new TextEditingController();
   store['distenationController']=new TextEditingController();
+  store['status']=0;
   store['apikey']="AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
   ClassBuilder.registerClasses();
   runApp(MyApp());
