@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:global_state/global_state.dart';
 
 class PasswordInput extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class PasswordInput extends StatefulWidget {
 }
 
 class _PasswordInputState extends State<PasswordInput> {
+  String code = "";
+  TextEditingController myController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -14,6 +17,7 @@ class _PasswordInputState extends State<PasswordInput> {
         height: 60,
         width: MediaQuery.of(context).size.width,
         child: TextField(
+          controller: myController,
           keyboardType: TextInputType.number,
           style: TextStyle(
             color: Color.fromRGBO(246, 238, 223, 1),
@@ -23,11 +27,15 @@ class _PasswordInputState extends State<PasswordInput> {
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.white)
             ),
-            labelText: 'Code',
+            labelText: 'Enter code here',
             labelStyle: TextStyle(
               color: Color.fromRGBO(246, 238, 223, 1),
             ),
           ),
+          onChanged: (text){
+            code = myController.text;
+            store['code'] = text.toString();
+          },
         ),
       ),
     );

@@ -11,7 +11,6 @@ class _TextNewState extends State<TextNew> {
     return Padding(
       padding: const EdgeInsets.only(top: 30.0, left: 10.0),
       child: Container(
-        //color: Colors.green,
         height: 200,
         width: 200,
         child: Column(
@@ -21,10 +20,10 @@ class _TextNewState extends State<TextNew> {
             ),
             Center(
               child: Text(
-                'The best Taxi App',
+                'Welcome\nTo Taxi White!',
                 style: TextStyle(
                   fontSize: 24,
-                  color: Colors.white,
+                  color: Colors.black38,
                 ),
               ),
             ),
