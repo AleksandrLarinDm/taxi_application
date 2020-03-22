@@ -37,7 +37,7 @@ dependencies:
   geocoder: 0.2.1
   permission: any
   location: ^2.3.5
-
+  connectivity: 0.4.8+2
 dev_dependencies:
   flutter_test:
     sdk: flutter

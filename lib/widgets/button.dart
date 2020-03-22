@@ -31,13 +31,13 @@ class _ButtonLoginState extends State<ButtonLogin>{
         ),
         child: FlatButton(
           onPressed: () async{
-            await codeResponse(store['code'], store['phone']);
-            if(store['status_v'] == 200){
+           // await codeResponse(store['code'], store['phone']);
+           // if(store['status_v'] == 200){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>MainWidget()));
-            }
-            else{
-              print('Error');
-            }
+           // }
+          //  else{
+           //   print('Error');
+          //  }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

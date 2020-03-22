@@ -7,6 +7,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_map_polyline/google_map_polyline.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kf_drawer/kf_drawer.dart';
 import 'package:search_map_place/search_map_place.dart';
 import 'package:taxiapplication/map_request.dart';
 import 'package:global_state/global_state.dart';
@@ -15,7 +16,10 @@ import 'package:google_maps_webservice/places.dart';
 
 const kGoogleApiKey = "AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
-class MapContainer extends StatefulWidget{
+class MapContainer extends KFDrawerContent{
+  MapContainer({
+    Key key,
+  });
   @override
   State<StatefulWidget> createState() => _MapContainerState();
 
@@ -33,13 +37,20 @@ class _MapContainerState extends State<MapContainer>{
   static LatLng _initialPosition;
   LatLng _cameraPosition;
   List<LatLng> routeCoords;
-  final Set<Polyline> _polyLines = {};
+   Set<Polyline> _polyLines = {};
   GoogleMapsServices _googleMapsServices = GoogleMapsServices();
-  bool visible=true;
+  bool inputsVisible=true;
   bool visibleSearchDestination=false;
-  bool visibleSearchCurrent=true;
-
-  Set<Polyline> get polyLines => _polyLines;
+  bool visibleSearchCurrent=false;
+  bool setFromMapCurrent=true;
+  bool setFromMapDestination=false;
+  bool ready=false;
+  bool zakaz=false;
+  bool currentPosition=true;
+  bool myLocation=true;
+  bool menu=true;
+  bool resume=false;
+  bool back=false;
   GoogleMapPolyline googleMapPolyline =  new GoogleMapPolyline(apiKey: store['apikey']);
 
 
@@ -57,7 +68,8 @@ class _MapContainerState extends State<MapContainer>{
   }
   void sendRequest() async {
     String route = await _googleMapsServices.getRouteCoordinates(
-        LatLng(store['current'].latitude,store['current'].longitude),LatLng(store['distenation'].latitude,store['distenation'].longitude));
+        LatLng(store['current'].latitude,store['current'].longitude),
+        LatLng(store['distenation'].latitude,store['distenation'].longitude));
     createRoute(route);
     _addMarker(store['distenation'],"distenation");
   }
@@ -117,16 +129,23 @@ class _MapContainerState extends State<MapContainer>{
     var first = addresses.first;
     setState(() {
       store['currentController'].text=first.addressLine;
+      store['current']=new Coordinates(latLng.latitude,latLng.longitude);
     });
 
   }
-
+  void checkPermission() {
+    _geolocator.checkGeolocationPermissionStatus()
+        .then((status) { print('status: $status'); });
+    _geolocator.checkGeolocationPermissionStatus(locationPermission: GeolocationPermission.locationAlways)
+        .then((status) { print('always status: $status'); });
+    _geolocator.checkGeolocationPermissionStatus(locationPermission: GeolocationPermission.locationWhenInUse)
+        .then((status) { print('whenInUse status: $status'); });
+  }
   @override
   void initState() {
     super.initState();
     rootBundle.loadString('assets/map_style.txt').then((string) {
       _mapStyle = string;
-      print(string+"/////////////");
     });
     _geolocator = Geolocator();
     LocationOptions locationOptions = LocationOptions(accuracy: LocationAccuracy.high, distanceFilter: 1);
@@ -141,20 +160,12 @@ class _MapContainerState extends State<MapContainer>{
        {
          getAdress(_initialPosition);
        }
-         print("/////////////////");
         });
 
 
   }
 
-  void checkPermission() {
-    _geolocator.checkGeolocationPermissionStatus()
-        .then((status) { print('status: $status'); });
-    _geolocator.checkGeolocationPermissionStatus(locationPermission: GeolocationPermission.locationAlways)
-        .then((status) { print('always status: $status'); });
-    _geolocator.checkGeolocationPermissionStatus(locationPermission: GeolocationPermission.locationWhenInUse)
-        .then((status) { print('whenInUse status: $status'); });
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -167,18 +178,18 @@ class _MapContainerState extends State<MapContainer>{
         child: new Icon(Icons.person_pin_circle, size: iconSize)
     );
     _myLocation=new Positioned(
-        top: (mapHeight - 200),
-        right: 20,
+       bottom: 120,
+        right: 10,
         child: new IconButton(
           color: Colors.grey,
           icon:  new Icon(
               Icons.my_location,
               color: Colors.black,
-              size: iconSize),
+              size: 30.0),
           onPressed: ()async{
             mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: LatLng(_position.latitude, _position.longitude), zoom: 17)));
           },
-          iconSize: 20.0,
+          iconSize: 30.0,
         ),);
     return Container(
       height:mapHeight,
@@ -190,7 +201,7 @@ class _MapContainerState extends State<MapContainer>{
           target: _initialPosition,
           zoom: 17,
         ),
-          polylines: polyLines,
+          polylines: _polyLines,
 
           myLocationEnabled: true,
         myLocationButtonEnabled: false,
@@ -203,170 +214,249 @@ class _MapContainerState extends State<MapContainer>{
         },
           //CAMERA MOVE START//
           onCameraMoveStarted: (){
-          print("start");
-          setState(() {
-            visible=false;
-          });
-          print(visible);
-          },
+            if(setFromMapCurrent) {
+              print("start");
+              setState(() {
+                  inputsVisible=false;
+              });
+              print(inputsVisible);
+           }
+            if(setFromMapDestination){
+
+            }
+            },
           //CAMERA MOVING//
           onCameraMove: (CameraPosition position){
-            _cameraPosition=position.target;
-            print(_cameraPosition);
-            },
+           if(setFromMapCurrent) {
+             _cameraPosition = position.target;
+             print(_cameraPosition);
+           }
+           if(setFromMapDestination){
+             _cameraPosition = position.target;
+             print(_cameraPosition);
+           }
+
+           },
           //CAMERA MOVE FINISH//
           onCameraIdle: ()async{
-          print("finish");
-          final coordinates = new Coordinates(_cameraPosition.latitude,_cameraPosition.longitude);
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
-          var first = addresses.first;
-          setState(() {
-            store['currentController'].text=first.addressLine.split(",")[0]+", "+first.addressLine.split(",")[1];
-            visible=true;
-          });
-          store['current']=new Coordinates(_cameraPosition.latitude,_cameraPosition.longitude);
-          setState(() {_markers.add(
-              new Marker(
-                  markerId: new MarkerId("current"),
-                position: _cameraPosition
-              )
-          );});
-          print("${first.featureName} : ${first.addressLine}");
-          print("${first.adminArea} : ${first.subAdminArea}");
-          print("${first.subThoroughfare} : ${first.subLocality}");
+           if(setFromMapCurrent) {
+             print("finish");
+             final coordinates = new Coordinates(
+                 _cameraPosition.latitude, _cameraPosition.longitude);
+             var addresses = await Geocoder.local.findAddressesFromCoordinates(
+                 coordinates);
+             var first = addresses.first;
+             setState(() {
+               store['currentController'].text =
+                   first.addressLine.split(",")[0] + ", " +
+                       first.addressLine.split(",")[1];
+               store['current'] = new Coordinates(
+                   _cameraPosition.latitude, _cameraPosition.longitude);
+               inputsVisible = true;
+             });
+             setState(() {
+               _markers.add(
+                   new Marker(
+                       markerId: new MarkerId("current"),
+                       position: _cameraPosition
+                   )
+               );
+             });
 
-          print(store['currentController'].text);
-          print(visible);
-          },
+             print(store['currentController'].text);
+             print(inputsVisible);
+           }
+           if(setFromMapDestination){
+             print("finish");
+             final coordinates = new Coordinates(
+                 _cameraPosition.latitude, _cameraPosition.longitude);
+             var addresses = await Geocoder.local.findAddressesFromCoordinates(
+                 coordinates);
+             var first = addresses.first;
+             setState(() {
+               store['distenationController'].text =
+                   first.addressLine.split(",")[0] + ", " +
+                       first.addressLine.split(",")[1];
+               store['distenation'] = new Coordinates(
+                   _cameraPosition.latitude, _cameraPosition.longitude);
+             });
+             setState(() {
+               _markers.add(
+                   new Marker(
+                       markerId: new MarkerId("distenation"),
+                       position: _cameraPosition
+                   )
+               );
+             });
+             print(store['distenationController'].text);
+             print(inputsVisible);
+           }
+           },
         markers: _markers,
-      ),
-        _myLocation,
-        _currentPosition,
+      ),//карта гугл меп
         Visibility(
-          maintainSize: true,
-          maintainAnimation: true,
-          maintainState: true,
-          visible: visible,
-          child:  Container(
-            height: 100,
-            width: mapWidth,
-            margin: EdgeInsets.only(top:mapHeight-100,left: 10,right: 10),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: 40,
-                  decoration:  BoxDecoration(
-                    color: const Color(0xff7c94b6),
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  width: mapWidth,
-                    child:Row(
-                        children: <Widget>[
-                          new Icon(Icons.my_location),
-                          new GestureDetector( child:Container(
-                            width:mapWidth-50.0,
-                            child: new Text(store['currentController'].text,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.amber
-                              ),
-                            ),),
-                            onTap: (){
-                              setState(() {
-                              visibleSearchCurrent=true;
-                              });
-                            },
-                          ),
-                        ])
-                ),
-                Container(
-                  height: 40,
-                  decoration:  BoxDecoration(
-                  color: const Color(0xff7c94b6),
-                  border: Border.all(
-                      color: Colors.black,
-                      width: 2,
+          child:_myLocation,
+          visible: myLocation,
+        ),//кнопка что б перейти к моему местоположению
+        Visibility(
+          child: _currentPosition,
+          visible:  currentPosition,
+        ),//маркер положения карти
+        Visibility(
+          visible: inputsVisible,
+          child: Positioned(
+            bottom: 10,
+            left: 10,
+            right: 10,
+            child:  Container(
+              height: 100,
+              width: mapWidth,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                      height: 40,
+                      decoration:  BoxDecoration(
+                        color: const Color(0xff7c94b6),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                  borderRadius: BorderRadius.circular(12),
+                      width: mapWidth,
+                      child:Row(
+                          children: <Widget>[
+                            new Icon(Icons.my_location),
+                            new GestureDetector( child:Container(
+                              width:mapWidth-50.0,
+                              child: new Text(store['currentController'].text,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.amber
+                                ),
+                              ),),
+                              onTap: (){
+                                setState(() {
+                                  back=true;
+                                  resume=false;
+                                  menu=false;
+                                  visibleSearchCurrent=true;
+                                });
+                              },
+                            ),
+                          ])
                   ),
-                  width: mapWidth,
-                  child:Row(
-                      children: <Widget>[
-                     new Icon(Icons.local_taxi),
-                    new GestureDetector(
-                      child:Container(
-                        color: Colors.black,
-                          width:mapWidth-50.0,
-                          child: new Text(store['distenationController'].text,
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.amber
+                  Container(
+                      height: 40,
+                      decoration:  BoxDecoration(
+                        color: const Color(0xff7c94b6),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                        )),
-                    onTap: (){
-                      setState(() {
-                        visibleSearchDestination=true;
-                      });
-                    },
-                  ),
-                      ])
-                )
-              ],
+                      width: mapWidth,
+                      child:Row(
+                          children: <Widget>[
+                            new Icon(Icons.local_taxi),
+                            new GestureDetector(
+                              child:Container(
+                                  width:mapWidth-50.0,
+                                  child: new Text(store['distenationController'].text,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.amber
+                                    ),
+                                  )),
+                              onTap: (){
+                                setState(() {
+                                  back=true;
+                                  resume=false;
+                                  menu=false;
+                                  visibleSearchDestination=true;
+                                });
+                              },
+                            ),
+                          ])
+                  )
+                ],
+              ),
             ),
           ),
 
-        ),
+        ),//контейнер с локациями старта и назначения
         Visibility(
           child: Container(
             height: mapHeight,
             width: mapWidth,
             color: Colors.deepOrange,
-                 child:Positioned(
-                   top:60,
-
-                   child:  SearchMapPlaceWidget(
-              apiKey: kGoogleApiKey,
-              location: _initialPosition,
-              radius: 30000,
-              onSelected: (place) async {
-                  final geolocation = await place.geolocation;
-                  print(geolocation.coordinates);
-                  store['current'] = Coordinates(
-                      geolocation.coordinates.latitude,
-                      geolocation.coordinates.longitude);
-                  store['currentController'].text = await place.description;
-                  mapController.animateCamera(CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          target: geolocation.coordinates, zoom: 17)));
-                  setState(() {
-                    if (store['current'] != "" && store['distenation'] != "") {
-                      print("errrrrr");
-                      sendRequest();
-                    }
-                  });
-                visibleSearchCurrent = false;
-              },
-            ),
-                 )
+              padding: EdgeInsets.all(50),
+              child:ListView(
+                  children: <Widget>[
+                     SearchMapPlaceWidget(
+                       apiKey: kGoogleApiKey,
+                       location: _initialPosition,
+                       radius: 30000,
+                        icon: IconData(0xeb3b, fontFamily: 'MaterialIcons'),
+                        onSelected: (place) async {
+                            final geolocation = await place.geolocation;
+                            print(geolocation.coordinates);
+                            store['current'] = Coordinates(
+                             geolocation.coordinates.latitude,
+                            geolocation.coordinates.longitude);
+                            store['currentController'].text = await place.description;
+                            mapController.animateCamera(
+                                CameraUpdate.newCameraPosition(
+                                    CameraPosition(
+                                        target: geolocation.coordinates,
+                                        zoom: 17
+                                    )
+                                )
+                            );
+                    visibleSearchCurrent = false;
+                    },
+                     )
+                  ]
+              )
           ),
-
           visible: visibleSearchCurrent,
-        ),
-        Visibility(child: Container(
+        ),//контейнер с поиском локации старта
+        Visibility(
+          child: Container(
            height: mapHeight,
             width: mapWidth,
             padding: EdgeInsets.all(50),
             color: Colors.deepOrange,
-               child: SearchMapPlaceWidget(
-              apiKey: kGoogleApiKey,
-              location: _initialPosition,
-              radius: 30000,
-              onSelected: (place) async {
-                final geolocation = await place.geolocation;
+              child:ListView(
+                     children: <Widget>[
+                       IconButton(
+                         icon: Row(
+                           children: <Widget>[
+                             Icon(Icons.local_taxi,color: Colors.white,),
+                             Text("Choose on map")
+                           ],
+                         ),
+                         onPressed:(){
+                           setState(() {
+                            visibleSearchDestination=false;
+                            setFromMapCurrent=false;
+                            setFromMapDestination=true;
+                            ready=true;
+                            resume=true;
+                            back=false;
+                            menu=false;
+                            inputsVisible=false;
+                           });
+                         } ,
+                       ),
+                            SearchMapPlaceWidget(
+                  apiKey: kGoogleApiKey,
+                  location: _initialPosition,
+                  radius: 30000,
+                  placeholder: "Enter your place",
+                  onSelected: (place) async {
+                  final geolocation = await place.geolocation;
                   print(geolocation.coordinates);
                   store['distenation'] = Coordinates(
                       geolocation.coordinates.latitude,
@@ -378,26 +468,236 @@ class _MapContainerState extends State<MapContainer>{
                               target: geolocation.coordinates,
                               zoom: 17)));
                   setState(() {
+                    menu=false;
+                    setFromMapCurrent=false;
+                    currentPosition=false;
                     if (store['current'] != "" && store['distenation'] != "") {
                       print("errrrrr");
                       sendRequest();
+                      ready=true;
                     }
                   });
                 visibleSearchDestination = false;
 
               },
             ),
+                          ],
+                      )
 
-        ),
+          ),
           visible: visibleSearchDestination,
-        )
+        ),//контейнер с поиском локации назначения
+        Visibility(
+          child: Positioned(
+            child: Container(
+              height: 100,
+              width: mapWidth,
+              child: GestureDetector(
+               child: Column(
+                 children: <Widget>[
+                  Container(
+                    height: 50,
+                    color: Colors.grey,
+                    width: mapWidth,
+                    child:GestureDetector(
+                        child:  Row(
+                          children: <Widget>[
+                            Icon(Icons.place,size: 30,),
+                            Text(store['distenationController'].text)
+                          ],
+                        ),
+                      onTap: (){
+                        setState(() {
+                          resume=true;
+                          back=false;
+                          menu=false;
+                          visibleSearchDestination=true;
+                        });
+                      },
+                    ),
+                  ),
+                 Container(
+                   height: 50 ,
+                   width: mapWidth,
+                   color: Colors.yellow,
+                   child:Center(
+                     child: FlatButton(
+                       child: Text(
+                           "READY",
+                           style: TextStyle(
+                               fontSize: 20,
+                               color: Colors.white
+                           )
+                       ),
+                       onPressed: (){
+                         if (store['current'] != "" &&
+                             store['distenation'] != ""){
+                           print("errrrrr");
+                           sendRequest();
+                           setState(() {
+                             menu=false;
+                             ready=false;
+                             resume=true;
+                             back=false;
+                             setFromMapDestination=false;
+                             currentPosition=false;
+                             zakaz=true;
+                             myLocation=false;
+                           });
+                             }
+                         },
+                     ),
+                   ),
+                 )
+                 ],
+               ),
+              ),
+            ),
+            bottom: 10,
+            left: 10,
+            right: 10,
+          ),
+          visible: ready,
+        ),//подтверждение локации назначения
+        Visibility(
+          child: Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 150,
+              width: mapWidth,
+              color: Colors.deepOrange,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                        "рудий хуй"
+                    )
+                  ),
+                  Container(
+                    child: FlatButton(
+                      child: Text(
+                        "Order"
+                      ),
+                      onPressed: (){
+                        showDialog(
+                            context: context,
+                            child:Text(
+                                "Succesfull"
+                            )
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          visible: zakaz,
+        ),//оформеления заказ
+        Visibility(
+          visible: menu,
+          child:ClipRRect(
+
+          borderRadius: BorderRadius.all(Radius.circular(32.0)),
+          child: Material(
+            shadowColor: Colors.transparent,
+            color: Colors.transparent,
+            child: IconButton(
+              padding: EdgeInsets.only(top: 20),
+              icon: Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),
+              onPressed: widget.onMenuPressed,
+            ),
+          ),
+        ),
+        ),//меню
+        Visibility(
+          visible: resume,
+          child:ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            child: Material(
+              shadowColor: Colors.transparent,
+              color: Colors.transparent,
+              child: IconButton(
+                padding: EdgeInsets.only(top: 20),
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.black,
+                ),
+                onPressed: (){
+                  setState(() {
+                    menu=true;
+                    resume=false;
+                    ready=false;
+                    back=false;
+                    zakaz=false;
+                    setFromMapCurrent=true;
+                    setFromMapDestination=false;
+                    myLocation=true;
+                    inputsVisible=true;
+                    currentPosition=true;
+                    inputsVisible=true;
+                     _polyLines={};
+                    _markers={};
+                    store['distenationController'].text="";
+                    store['distenation']="";
+                    store['current']="";
+                    store['currentController'].text="";
+                    if(store['currentController'].text=="")
+                    {
+                      getAdress(_initialPosition);
+                    }
+                    mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                            CameraPosition(
+                                target: _initialPosition,
+                                zoom: 17)));
+
+                  });
+                },
+              ),
+            ),
+          ),
+        ),//вернуть всё в начальное положение
+        Visibility(
+          visible: back,
+          child:ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(32.0)),
+            child: Material(
+              shadowColor: Colors.transparent,
+              color: Colors.transparent,
+              child: IconButton(
+                padding: EdgeInsets.only(top: 20),
+                icon: Icon(
+                  Icons.cancel,
+                  color: Colors.black,
+                ),
+                onPressed: (){
+                  setState(() {
+                    visibleSearchCurrent=false;
+                    visibleSearchDestination=false;
+                    back=false;
+                    resume=false;
+                    menu=true;
+                  });
+                },
+              ),
+            ),
+          ),
+        ),//назад к вибору по маркеру
       ]
     )
     );
 
   }
+  void resumeValue() {
 
 
+  }
 }
 
 

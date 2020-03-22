@@ -19,37 +19,12 @@ class MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       body: Stack(
         children: <Widget>[
-
           MapContainer(),
-          ClipRRect(
-
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            child: Material(
-              shadowColor: Colors.transparent,
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.only(top: 20),
-                icon: Icon(
-                  Icons.menu,
-                  color: Colors.black,
-                ),
-                onPressed: widget.onMenuPressed,
-              ),
-            ),
-          ),
         ],
       ),
-
-
     );
   }
-
-
-
-
 }
