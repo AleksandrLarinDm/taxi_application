@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taxiapplication/widgets/login_button.dart';
 import 'package:taxiapplication/widgets/signup.dart';
 import 'package:taxiapplication/widgets/textNew.dart';
 import 'package:taxiapplication/widgets/newName.dart';
@@ -20,7 +21,7 @@ class _NewUserState extends State<NewUser> {
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.red]),
+              colors: [Colors.white, Colors.blue]),
         ),
         child: ListView(
           children: <Widget>[
@@ -32,9 +33,8 @@ class _NewUserState extends State<NewUser> {
                     TextNew(),
                   ],
                 ),
-                NewName(),
-                NewEmail(),
                 ButtonNewUser(),
+                ScndTime()
               ],
             ),
           ],
