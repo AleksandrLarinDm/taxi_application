@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:taxiapplication/widgets/login_button.dart';
-import 'package:taxiapplication/widgets/signup.dart';
-import 'package:taxiapplication/widgets/textNew.dart';
-import 'package:taxiapplication/widgets/newName.dart';
 import 'package:taxiapplication/widgets/newEmail.dart';
-import 'package:taxiapplication/widgets/buttonNU.dart';
+import 'package:taxiapplication/widgets/signin.dart';
+import 'package:taxiapplication/widgets/textOld.dart';
 
-
-class NewUser extends StatefulWidget {
+class oldUser extends StatefulWidget{
   @override
-  _NewUserState createState() => _NewUserState();
+  _oldUserState createState() => _oldUserState();
 }
 
-class _NewUserState extends State<NewUser> {
+class _oldUserState extends State<oldUser>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +17,7 @@ class _NewUserState extends State<NewUser> {
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.blue]),
+              colors: [Colors.white, Colors.red]),
         ),
         child: ListView(
           children: <Widget>[
@@ -29,14 +25,14 @@ class _NewUserState extends State<NewUser> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    SingUp(),
-                    TextNew(),
+                    SignIn(),
+                    TextOld()
                   ],
                 ),
-                ButtonNewUser(),
-                ScndTime()
+                NewEmail()
+
               ],
-            ),
+            )
           ],
         ),
       ),

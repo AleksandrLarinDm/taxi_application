@@ -17,8 +17,9 @@ class _NewEmailState extends State<NewEmail>{
         height: 60,
         width: MediaQuery.of(context).size.width,
         child: TextField(
+          autofocus: false,
           controller: myController,
-          keyboardType: TextInputType.phone,
+          keyboardType: TextInputType.numberWithOptions(),
           style: TextStyle(
             color: Color.fromRGBO(246, 238, 223, 1)
           ),

@@ -29,13 +29,13 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white, width: 3.0)),
         child: FlatButton(
           onPressed: ()async{
-           //await makeRequest(store['phone'], store['name']);
-        //   if(store['status']==200){
+           await makeRequest(store['phone'], store['name']);
+           if(store['status']==200){
               Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitPage()));
-        //    }
-         // //  else{
-        //      print("Error");
-         //   }
+            }
+            else{
+              print("Error");
+            }
             print(store['phone']);
           },
           child: Row(

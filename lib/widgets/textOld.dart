@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 
-class TextNew extends StatefulWidget {
+class TextOld extends StatefulWidget {
   @override
-  _TextNewState createState() => _TextNewState();
+  _TextOldState createState() => _TextOldState();
 }
 
-class _TextNewState extends State<TextNew> {
+class _TextOldState extends State<TextOld> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0, left: 45.0),
+      padding: const EdgeInsets.only(top: 30.0, left: 10.0),
       child: Container(
         height: 200,
         width: 200,
         child: Column(
           children: <Widget>[
             Container(
-              alignment: Alignment.bottomLeft,
-              height: 80,
+              height: 60,
             ),
             Center(
               child: Text(
-                '   Welcome\nto White taxi!',
+                'We are glad\nto see you again!',
                 style: TextStyle(
-                  fontSize: 34,
+                  fontSize: 24,
                   color: Colors.black38,
                 ),
               ),
