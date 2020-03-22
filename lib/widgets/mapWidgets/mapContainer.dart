@@ -141,6 +141,7 @@ class _MapContainerState extends State<MapContainer>{
     _geolocator.checkGeolocationPermissionStatus(locationPermission: GeolocationPermission.locationWhenInUse)
         .then((status) { print('whenInUse status: $status'); });
   }
+  //
   @override
   void initState() {
     super.initState();
