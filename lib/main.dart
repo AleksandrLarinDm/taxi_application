@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
 
-      home: NewUser(),
+      home: MapPage(),
         debugShowCheckedModeBanner: false
     );
   }

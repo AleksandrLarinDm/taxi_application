@@ -503,8 +503,17 @@ class _MapContainerState extends State<MapContainer>{
                     child:GestureDetector(
                         child:  Row(
                           children: <Widget>[
-                            Icon(Icons.place,size: 30,),
-                            Text(store['distenationController'].text)
+                            Icon(
+                              Icons.my_location,
+                              size: 30,
+                            ),
+                            Text(
+                              store['distenationController'].text,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.amber
+                            ),
+                            )
                           ],
                         ),
                       onTap: (){
@@ -599,93 +608,101 @@ class _MapContainerState extends State<MapContainer>{
         ),//оформеления заказ
         Visibility(
           visible: menu,
-          child:ClipRRect(
-
-          borderRadius: BorderRadius.all(Radius.circular(32.0)),
-          child: Material(
-            shadowColor: Colors.transparent,
-            color: Colors.transparent,
-            child: IconButton(
-              padding: EdgeInsets.only(top: 20),
-              icon: Icon(
-                Icons.menu,
-                color: Colors.black,
+          child:Positioned(
+            top: 30,
+            left: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.black,
+                  ),
+                  onPressed: widget.onMenuPressed,
+                ),
               ),
-              onPressed: widget.onMenuPressed,
             ),
           ),
-        ),
         ),//меню
         Visibility(
           visible: resume,
-          child:ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            child: Material(
-              shadowColor: Colors.transparent,
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.only(top: 20),
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.black,
-                ),
-                onPressed: (){
-                  setState(() {
-                    menu=true;
-                    resume=false;
-                    ready=false;
-                    back=false;
-                    zakaz=false;
-                    setFromMapCurrent=true;
-                    setFromMapDestination=false;
-                    myLocation=true;
-                    inputsVisible=true;
-                    currentPosition=true;
-                    inputsVisible=true;
-                     _polyLines={};
-                    _markers={};
-                    store['distenationController'].text="";
-                    store['distenation']="";
-                    store['current']="";
-                    store['currentController'].text="";
-                    if(store['currentController'].text=="")
-                    {
-                      getAdress(_initialPosition);
-                    }
-                    mapController.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                            CameraPosition(
-                                target: _initialPosition,
-                                zoom: 17)));
+          child:Positioned(
+            top: 30,
+            left: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.black,
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      menu=true;
+                      resume=false;
+                      ready=false;
+                      back=false;
+                      zakaz=false;
+                      setFromMapCurrent=true;
+                      setFromMapDestination=false;
+                      myLocation=true;
+                      inputsVisible=true;
+                      currentPosition=true;
+                      inputsVisible=true;
+                      _polyLines={};
+                      _markers={};
+                      store['distenationController'].text="";
+                      store['distenation']="";
+                      store['current']="";
+                      store['currentController'].text="";
+                      if(store['currentController'].text=="")
+                      {
+                        getAdress(_initialPosition);
+                      }
+                      mapController.animateCamera(
+                          CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                  target: _initialPosition,
+                                  zoom: 17)));
 
-                  });
-                },
+                    });
+                  },
+                ),
               ),
             ),
           ),
-        ),//вернуть всё в начальное положение
+        ),//вернуть всё в начальное положение//
         Visibility(
           visible: back,
-          child:ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            child: Material(
-              shadowColor: Colors.transparent,
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.only(top: 20),
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.black,
+          child:Positioned(
+            top: 30,
+            left: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.black,
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      visibleSearchCurrent=false;
+                      visibleSearchDestination=false;
+                      back=false;
+                      resume=false;
+                      menu=true;
+                    });
+                  },
                 ),
-                onPressed: (){
-                  setState(() {
-                    visibleSearchCurrent=false;
-                    visibleSearchDestination=false;
-                    back=false;
-                    resume=false;
-                    menu=true;
-                  });
-                },
               ),
             ),
           ),
