@@ -31,12 +31,55 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
     store['status'] = status;
     print(store['status']);
   }
+  Map<String, String> cookies = {};
+
+  Map<String, String> _updateCookie(http.Response response){
+    Map<String, String> globalcookie = {};
+    String allSetCookie = response.headers['set-cookie'];
+    if(allSetCookie != null){
+      var setCookies = allSetCookie.split(',');
+      for(var setCookie in setCookies){
+        var cookies = setCookie.split(';');
+        for(var cookie in cookies){
+          if (cookie.length > 0) {
+            var keyValue = cookie.split('=');
+            if (keyValue.length == 2) {
+              var key = keyValue[0].trim();
+              var value = keyValue[1];
+              // ignore keys that aren't cookies
+              if (key == 'path' || key == 'expires')
+                continue;
+              globalcookie[key] = value;
+            }
+          }
+        }
+      }
+    }
+    return globalcookie;
+  }
+
+  String _generateCookieHeader(Map<String,String> cookies) {
+    String cookie = "";
+    for (var key in cookies.keys) {
+      if (cookie.length > 0)
+        cookie += ";";
+      cookie += key + "=" + cookies[key];
+    }
+    return cookie;
+  }
 
   Future<String> getSession() async {
-    Map<String, String> headers = {"content-type":"text/json"};
+    Map<String, String> headers = {};
+    if (store['cookie'] != null){
+      headers['cookie'] = _generateCookieHeader({ 'connect.sid': store['cookie']['connect.sid'] });
+    }
     final response = await http.get(Uri.encodeFull(url), headers: headers);
-    String json = response.body;
-    print(json);
+    if (response.headers['set-cookie'] != null) {
+      var cookie = _updateCookie(response);
+      if (cookie['connect.sid'] != null) {
+        store['cookie'] = { 'connect.sid': cookie['connect.sid'] };
+      }
+    }
   }
 
   @override
@@ -53,13 +96,6 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
           focusColor: Colors.white,
           onPressed: ()async{
            await getSession();
-//           if(store['status']==200){
-//              //Navigator.push(context, MaterialPageRoute(builder: (context) => SubmitPage()));
-//            }
-//            else{
-//              _showAlert(context);
-//            }
-//            print(store['phone']);
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
