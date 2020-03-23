@@ -241,11 +241,11 @@ class _MapContainerState extends State<MapContainer>{
               ),
             ],
           ),
-        ),
-      body:Container( height:mapHeight,
+        ),//боковое меню
+        body:Container( height:mapHeight,
         width: mapWidth,
-      child:Stack(children:<Widget>[
-        GoogleMap(
+           child:Stack(children:<Widget>[
+             GoogleMap(
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
           target: _initialPosition,
@@ -344,15 +344,15 @@ class _MapContainerState extends State<MapContainer>{
            },
         markers: _markers,
       ),//карта гугл меп
-        Visibility(
+             Visibility(
           child:_myLocation,
           visible: myLocation,
         ),//кнопка что б перейти к моему местоположению
-        Visibility(
+             Visibility(
           child: _currentPosition,
           visible:  currentPosition,
         ),//маркер положения карти
-        Visibility(
+             Visibility(
           visible: inputsVisible,
           child: Positioned(
             bottom: 10,
@@ -436,7 +436,7 @@ class _MapContainerState extends State<MapContainer>{
           ),
 
         ),//контейнер с локациями старта и назначения
-        Visibility(
+             Visibility(
           child: Container(
             height: mapHeight,
             width: mapWidth,
@@ -472,7 +472,7 @@ class _MapContainerState extends State<MapContainer>{
           ),
           visible: visibleSearchCurrent,
         ),//контейнер с поиском локации старта
-        Visibility(
+             Visibility(
           child: Container(
            height: mapHeight,
             width: mapWidth,
@@ -537,7 +537,7 @@ class _MapContainerState extends State<MapContainer>{
           ),
           visible: visibleSearchDestination,
         ),//контейнер с поиском локации назначения
-        Visibility(
+             Visibility(
           child: Positioned(
             child: Container(
               height: 100,
@@ -618,44 +618,123 @@ class _MapContainerState extends State<MapContainer>{
           ),
           visible: ready,
         ),//подтверждение локации назначения
-        Visibility(
-          child: Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 150,
-              width: mapWidth,
-              color: Colors.deepOrange,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                        "рудий хуй"
-                    )
-                  ),
-                  Container(
-                    child: FlatButton(
-                      child: Text(
-                        "Order"
-                      ),
-                      onPressed: (){
-                        showDialog(
-                            context: context,
-                            child:Text(
-                                "Succesfull"
-                            )
-                        );
-                      },
-                    ),
-                  )
-                ],
-              ),
-            ),
+             Visibility(
+               child: Positioned(
+                 bottom: 0,
+                 left: 0,
+                 right: 0,
+                 child: Container(
+                   height: 200,
+                   width: mapWidth,
+                   color: Colors.deepOrange,
+                   child: Column(
+                     children: <Widget>[
+                       Container(
+                         width: mapWidth,
+                         height: 60,
+                         child:SingleChildScrollView(
+                             scrollDirection: Axis.horizontal,
+                             child: Row(
+                                 children: <Widget>[
+                                   Container(
+                                     width: mapWidth/2,
+                                     child: Text("eeeee            "),
+                                   ),
+                                   Container(
+                                     width: mapWidth/2,
+                                     child: Text("eeeee            "),
+                                   ),
+                                   Container(
+                                     width: mapWidth/2,
+                                     child: Text("eeeee            "),
+                                   ),
+                                   Container(
+                                     width: mapWidth/2,
+                                     child: Text("eeeee            "),
+                                   ),
+                                   Container(
+                                     width: mapWidth/2,
+                                     child: Text("eeeee            "),
+                                   ),
+                                 ]
+                             )
+                         ),
+                       ),
+                       Container(
+                         height: 50,
+                         decoration: BoxDecoration(
+                           border: Border(
+                               bottom: BorderSide(
+                                   color: Colors.white
+                               ),
+                             top: BorderSide(
+                               color: Colors.white
+                             )
+                           )
+                         ),
+                         child: Row(
+                           children: <Widget>[
+                             Text(
+                                 "45\$"
+                             ),
+                             Spacer(),
+                             Container(
+                               height: 30,
+                               child: FlatButton(
+                                 color: Colors.grey,
+                                 shape: RoundedRectangleBorder(
+                                     borderRadius: new BorderRadius.circular(18.0),
+                                     side: BorderSide(color: Colors.black)
+                                 ),
+                                 child: Text(
+                                     "change price"
+                                 ),
+                                 onPressed: (){print("113");},
+                               ),
+                             )
+                           ],
+                         ),
+                       ),
+                       Container(
+                         height: 50,
+                         child: Row(
+                           children: <Widget>[
+                             Container(),
+                             Container(),
+                             Container(),
+                             ],
+                         ),
+                       ),
+                       Container(
+                         height: 40,
+                         width: mapWidth,
+                         color: Colors.yellowAccent,
+                         child: GestureDetector(
+                           child: Center(
+                             child: Text(
+                                 "Order"
+                             ),
+
+                           ),
+
+                           onTap: (){
+                             showDialog(
+                                 context: context,
+                                 child:Text(
+                                     "Succesfull"
+                                 )
+                             );
+                           },
+                         ),
+                       )
+                     ],
+                   ),
+                 ),
+
           ),
-          visible: zakaz,
-        ),//оформеления заказ
-        Visibility(
+               visible: zakaz,
+             ),//оформеления заказ
+             Visibility(
           visible: menu,
           child:ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
@@ -673,7 +752,7 @@ class _MapContainerState extends State<MapContainer>{
               ),
           ),
         ),//меню
-        Visibility(
+             Visibility(
           visible: resume,
           child:Positioned(
             top: 30,
@@ -724,7 +803,7 @@ class _MapContainerState extends State<MapContainer>{
             ),
           ),
         ),//вернуть всё в начальное положение//
-        Visibility(
+             Visibility(
           visible: back,
           child:Positioned(
             top: 30,
@@ -753,8 +832,6 @@ class _MapContainerState extends State<MapContainer>{
             ),
           ),
         ),//назад к вибору по маркеру
-
-        //Боковое меню
       ]
     )
       )

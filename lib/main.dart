@@ -55,25 +55,7 @@ class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
     super.initState();
     _drawerController = KFDrawerController(
       initialPage: ClassBuilder.fromString('MapPage'),
-      items: [
 
-        KFDrawerItem.initWithPage(
-          text: Text(
-            'CALENDAR',
-            style: TextStyle(color: Colors.white),
-          ),
-          icon: Icon(Icons.calendar_today, color: Colors.white),
-          page: CalendarPage(),
-        ),
-        KFDrawerItem.initWithPage(
-          text: Text(
-            'SETTINGS',
-            style: TextStyle(color: Colors.white),
-          ),
-          icon: Icon(Icons.settings, color: Colors.white),
-          page: ClassBuilder.fromString('SettingsPage'),
-        ),
-      ],
     );
   }
   @override
