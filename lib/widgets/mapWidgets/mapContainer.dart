@@ -17,9 +17,6 @@ import 'package:google_maps_webservice/places.dart';
 const kGoogleApiKey = "AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 class MapContainer extends KFDrawerContent{
-  MapContainer({
-    Key key,
-  });
   @override
   State<StatefulWidget> createState() => _MapContainerState();
 
@@ -39,6 +36,8 @@ class _MapContainerState extends State<MapContainer>{
   List<LatLng> routeCoords;
    Set<Polyline> _polyLines = {};
   GoogleMapsServices _googleMapsServices = GoogleMapsServices();
+  GoogleMapPolyline googleMapPolyline =  new GoogleMapPolyline(apiKey: store['apikey']);
+
   bool inputsVisible=true;
   bool visibleSearchDestination=false;
   bool visibleSearchCurrent=false;
@@ -51,7 +50,7 @@ class _MapContainerState extends State<MapContainer>{
   bool menu=true;
   bool resume=false;
   bool back=false;
-  GoogleMapPolyline googleMapPolyline =  new GoogleMapPolyline(apiKey: store['apikey']);
+  bool sideMenu=false;
 
 
 
@@ -66,6 +65,7 @@ class _MapContainerState extends State<MapContainer>{
     }
     return result;
   }
+
   void sendRequest() async {
     String route = await _googleMapsServices.getRouteCoordinates(
         LatLng(store['current'].latitude,store['current'].longitude),
@@ -73,6 +73,7 @@ class _MapContainerState extends State<MapContainer>{
     createRoute(route);
     _addMarker(store['distenation'],"distenation");
   }
+
   void createRoute(String encondedPoly) {
     setState(() {
       _polyLines.add(Polyline(
@@ -83,6 +84,7 @@ class _MapContainerState extends State<MapContainer>{
     });
 
   }
+
   void _addMarker(LatLng location, String address) {
     _markers.add(Marker(
         markerId: MarkerId("112"),
@@ -90,6 +92,7 @@ class _MapContainerState extends State<MapContainer>{
         infoWindow: InfoWindow(title: address, snippet: "go here"),
         icon: BitmapDescriptor.defaultMarker));
   }
+
   List _decodePoly(String poly) {
     var list = poly.codeUnits;
     var lList = new List();
@@ -119,10 +122,12 @@ class _MapContainerState extends State<MapContainer>{
 
     return lList;
   }
+
   Future<Position> locateUser() async {
     return Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high).timeout(new Duration(seconds: 5));
   }
+
   getAdress(LatLng latLng)async{
     final coordinates = new Coordinates(latLng.latitude,latLng.longitude);
     var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
@@ -133,6 +138,7 @@ class _MapContainerState extends State<MapContainer>{
     });
 
   }
+
   void checkPermission() {
     _geolocator.checkGeolocationPermissionStatus()
         .then((status) { print('status: $status'); });
@@ -165,8 +171,7 @@ class _MapContainerState extends State<MapContainer>{
 
 
   }
-
-
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -192,9 +197,53 @@ class _MapContainerState extends State<MapContainer>{
           },
           iconSize: 30.0,
         ),);
-    return Container(
-      height:mapHeight,
-      width: mapWidth,
+    return Scaffold(
+        key: scaffoldKey,
+        drawer:Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text(
+                  'Side menu',
+                  style: TextStyle(color: Colors.white, fontSize: 25),
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: AssetImage('assets/images/cover.jpg'))),
+              ),
+              ListTile(
+                leading: Icon(Icons.input),
+                title: Text('Welcome'),
+                onTap: () => {},
+              ),
+              ListTile(
+                leading: Icon(Icons.verified_user),
+                title: Text('Profile'),
+                onTap: () => {Navigator.of(context).pop()},
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+                onTap: () => {Navigator.of(context).pop()},
+              ),
+              ListTile(
+                leading: Icon(Icons.border_color),
+                title: Text('Feedback'),
+                onTap: () => {Navigator.of(context).pop()},
+              ),
+              ListTile(
+                leading: Icon(Icons.exit_to_app),
+                title: Text('Logout'),
+                onTap: () => {Navigator.of(context).pop()},
+              ),
+            ],
+          ),
+        ),
+      body:Container( height:mapHeight,
+        width: mapWidth,
       child:Stack(children:<Widget>[
         GoogleMap(
         mapType: MapType.normal,
@@ -503,8 +552,17 @@ class _MapContainerState extends State<MapContainer>{
                     child:GestureDetector(
                         child:  Row(
                           children: <Widget>[
-                            Icon(Icons.place,size: 30,),
-                            Text(store['distenationController'].text)
+                            Icon(
+                              Icons.my_location,
+                              size: 30,
+                            ),
+                            Text(
+                              store['distenationController'].text,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.amber
+                            ),
+                            )
                           ],
                         ),
                       onTap: (){
@@ -600,98 +658,106 @@ class _MapContainerState extends State<MapContainer>{
         Visibility(
           visible: menu,
           child:ClipRRect(
-
-          borderRadius: BorderRadius.all(Radius.circular(32.0)),
-          child: Material(
-            shadowColor: Colors.transparent,
-            color: Colors.transparent,
-            child: IconButton(
-              padding: EdgeInsets.only(top: 20),
-              icon: Icon(
-                Icons.menu,
-                color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  padding: EdgeInsets.only(top: 20),
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.black,
+                  ),
+                  onPressed:() => scaffoldKey.currentState.openDrawer(),
+                ),
               ),
-              onPressed: widget.onMenuPressed,
-            ),
           ),
-        ),
         ),//меню
         Visibility(
           visible: resume,
-          child:ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            child: Material(
-              shadowColor: Colors.transparent,
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.only(top: 20),
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.black,
-                ),
-                onPressed: (){
-                  setState(() {
-                    menu=true;
-                    resume=false;
-                    ready=false;
-                    back=false;
-                    zakaz=false;
-                    setFromMapCurrent=true;
-                    setFromMapDestination=false;
-                    myLocation=true;
-                    inputsVisible=true;
-                    currentPosition=true;
-                    inputsVisible=true;
-                     _polyLines={};
-                    _markers={};
-                    store['distenationController'].text="";
-                    store['distenation']="";
-                    store['current']="";
-                    store['currentController'].text="";
-                    if(store['currentController'].text=="")
-                    {
-                      getAdress(_initialPosition);
-                    }
-                    mapController.animateCamera(
-                        CameraUpdate.newCameraPosition(
-                            CameraPosition(
-                                target: _initialPosition,
-                                zoom: 17)));
+          child:Positioned(
+            top: 30,
+            left: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.black,
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      menu=true;
+                      resume=false;
+                      ready=false;
+                      back=false;
+                      zakaz=false;
+                      setFromMapCurrent=true;
+                      setFromMapDestination=false;
+                      myLocation=true;
+                      inputsVisible=true;
+                      currentPosition=true;
+                      inputsVisible=true;
+                      _polyLines={};
+                      _markers={};
+                      store['distenationController'].text="";
+                      store['distenation']="";
+                      store['current']="";
+                      store['currentController'].text="";
+                      if(store['currentController'].text=="")
+                      {
+                        getAdress(_initialPosition);
+                      }
+                      mapController.animateCamera(
+                          CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                  target: _initialPosition,
+                                  zoom: 17)));
 
-                  });
-                },
+                    });
+                  },
+                ),
               ),
             ),
           ),
-        ),//вернуть всё в начальное положение
+        ),//вернуть всё в начальное положение//
         Visibility(
           visible: back,
-          child:ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            child: Material(
-              shadowColor: Colors.transparent,
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.only(top: 20),
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.black,
+          child:Positioned(
+            top: 30,
+            left: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(32.0)),
+              child: Material(
+                shadowColor: Colors.transparent,
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.black,
+                  ),
+                  onPressed: (){
+                    setState(() {
+                      visibleSearchCurrent=false;
+                      visibleSearchDestination=false;
+                      back=false;
+                      resume=false;
+                      menu=true;
+                    });
+                  },
                 ),
-                onPressed: (){
-                  setState(() {
-                    visibleSearchCurrent=false;
-                    visibleSearchDestination=false;
-                    back=false;
-                    resume=false;
-                    menu=true;
-                  });
-                },
               ),
             ),
           ),
         ),//назад к вибору по маркеру
+
+        //Боковое меню
       ]
     )
+      )
     );
 
   }

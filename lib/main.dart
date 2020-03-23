@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kf_drawer/kf_drawer.dart';
-import 'package:taxiapplication/utils/wrapper.dart';
 import 'utils/class_builder.dart';
 import 'screens/auth_page.dart';
 import 'screens/calendar_page.dart';
@@ -12,7 +11,6 @@ import 'dart:io';
 import 'package:taxiapplication/screens/newuser.page.dart';
 
 void main() {
-
   store['current']="";
   store['distenation']="";
   store['currentBool']=true;
@@ -33,15 +31,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Wrapper(),
+
+      home: MapPage(),
         debugShowCheckedModeBanner: false
     );
   }
 }
 
 class MainWidget extends StatefulWidget{
+
   MainWidget({Key key, this.title}) : super(key: key);
   final String title;
+
   @override
   _MainWidgetState createState() => _MainWidgetState();
 }
@@ -79,10 +80,6 @@ class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: KFDrawer(
-//        borderRadius: 0.0,
-//        shadowBorderRadius: 0.0,
-//        menuPadding: EdgeInsets.all(0.0),
-//        scrollable: true,
         controller: _drawerController,
         header: Align(
           alignment: Alignment.centerLeft,
