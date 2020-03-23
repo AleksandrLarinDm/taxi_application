@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:kf_drawer/kf_drawer.dart';
 import 'package:taxiapplication/widgets/mapWidgets/mapContainer.dart';
 
-class MapPage extends KFDrawerContent {
+class MapPage extends StatefulWidget {
   MapPage({
     Key key,
   });
