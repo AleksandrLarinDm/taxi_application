@@ -32,7 +32,8 @@ class _NewEmailState extends State<NewEmail>{
             labelStyle: TextStyle(
               color: Color.fromRGBO(246, 238, 223, 1)
             )
-          ),onChanged: (text){
+          ),
+          onChanged: (text){
             phone = myController.text;
             store['phone']=phone;
         },

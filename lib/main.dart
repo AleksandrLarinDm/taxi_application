@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kf_drawer/kf_drawer.dart';
+import 'package:taxiapplication/utils/wrapper.dart';
 import 'utils/class_builder.dart';
 import 'screens/auth_page.dart';
 import 'screens/calendar_page.dart';
@@ -32,24 +33,21 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
 
-      home: MapPage(),
+      home: Wrapper(),
         debugShowCheckedModeBanner: false
     );
   }
 }
 
 class MainWidget extends StatefulWidget{
-
   MainWidget({Key key, this.title}) : super(key: key);
   final String title;
-
   @override
   _MainWidgetState createState() => _MainWidgetState();
 }
 
 class _MainWidgetState extends State<MainWidget> with TickerProviderStateMixin {
   KFDrawerController _drawerController;
-
   @override
   void initState() {
     super.initState();

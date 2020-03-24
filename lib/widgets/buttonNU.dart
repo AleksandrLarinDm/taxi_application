@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
+import 'package:taxiapplication/screens/newuser.page.dart';
 import 'package:taxiapplication/screens/submit.page.dart';
 import 'package:http/http.dart' as http;
 
@@ -90,15 +91,17 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
         alignment: Alignment.center,
         height: 90,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), border: Border.all(color: Colors.white, width: 2.0)),
-        child: RaisedButton(
-          color: Color.fromRGBO(0, 0, 0, 0.1),
+        child: FlatButton(
+          color: Colors.white,
+          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+          padding: const EdgeInsets.only(top:40),
           focusColor: Colors.white,
-          onPressed: ()async{
+          onPressed: () async{
             await getSession();
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>SubmitPage()));
           },
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text(
                 'Sign Up',
