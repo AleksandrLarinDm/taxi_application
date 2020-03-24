@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:search_map_place/search_map_place.dart';
 import 'package:taxiapplication/map_request.dart';
 import 'package:global_state/global_state.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'dart:ui' as ui;
 
 
 const kGoogleApiKey = "AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
@@ -29,8 +31,9 @@ class _MapContainerState extends State<MapContainer>{
   Set<Marker> _markers = {};
   Positioned _myLocation;
   Positioned _currentPosition;
-  Geolocator _geolocator;
+  Positioned _allRoute;
   Position _position;
+  Geolocator _geolocator;
   static LatLng _initialPosition;
   LatLng _cameraPosition;
   List<LatLng> routeCoords;
@@ -51,6 +54,9 @@ class _MapContainerState extends State<MapContainer>{
   bool resume=false;
   bool back=false;
   bool sideMenu=false;
+  bool allRoute=false;
+  LatLngBounds bound;
+
 
 
 
@@ -63,6 +69,7 @@ class _MapContainerState extends State<MapContainer>{
         result.add(LatLng(points[i - 1], points[i]));
       }
     }
+ //   arrang=result[int.parse((result.length/2).toString().split(".")[0])];
     return result;
   }
 
@@ -71,7 +78,32 @@ class _MapContainerState extends State<MapContainer>{
         LatLng(store['current'].latitude,store['current'].longitude),
         LatLng(store['distenation'].latitude,store['distenation'].longitude));
     createRoute(route);
-    _addMarker(store['distenation'],"distenation");
+    _addMarker("current");
+    _addMarker("distenation");
+     bound = LatLngBounds(
+        southwest: LatLng(store['current'].latitude,store['current'].longitude),
+        northeast: LatLng(store['distenation'].latitude,store['distenation'].longitude)
+    );
+    if (store['distenation'].latitude > store['current'].latitude &&
+        store['distenation'].longitude > store['current'].longitude) {
+      bound = LatLngBounds(southwest: LatLng(store['current'].latitude,store['current'].longitude), northeast: LatLng(store['distenation'].latitude,store['distenation'].longitude));
+    } else if (store['distenation'].longitude > store['current'].longitude) {
+      bound = LatLngBounds(
+          southwest: LatLng(store['distenation'].latitude, store['current'].longitude),
+          northeast: LatLng(store['current'].latitude, store['distenation'].longitude));
+    } else if (store['distenation'].latitude > store['current'].latitude) {
+      bound = LatLngBounds(
+          southwest: LatLng(store['current'].latitude, store['distenation'].longitude),
+          northeast: LatLng(store['distenation'].latitude, store['current'].longitude));
+    } else {
+      bound = LatLngBounds(southwest: LatLng(store['distenation'].latitude,store['distenation'].longitude), northeast: LatLng(store['current'].latitude,store['current'].longitude));
+    }
+    setState(() {
+      mapController.animateCamera(CameraUpdate.newLatLngBounds(bound, 0));
+      mapController.animateCamera(
+        CameraUpdate.zoomOut(),
+      );
+    });
   }
 
   void createRoute(String encondedPoly) {
@@ -85,12 +117,26 @@ class _MapContainerState extends State<MapContainer>{
 
   }
 
-  void _addMarker(LatLng location, String address) {
-    _markers.add(Marker(
-        markerId: MarkerId("112"),
-        position: location,
-        infoWindow: InfoWindow(title: address, snippet: "go here"),
-        icon: BitmapDescriptor.defaultMarker));
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
+  }
+
+
+  void _addMarker( String address)async {
+    final Uint8List distenation = await getBytesFromAsset('assets/image/'+address+'.png', 100);
+    setState(() {
+      _markers.add(
+          new Marker(
+              markerId: new MarkerId(address),
+              position: LatLng(store[address].latitude,store[address].longitude),
+              icon: BitmapDescriptor.fromBytes(distenation)
+
+          )
+      );
+    });
   }
 
   List _decodePoly(String poly) {
@@ -197,6 +243,24 @@ class _MapContainerState extends State<MapContainer>{
           },
           iconSize: 30.0,
         ),);
+    _allRoute=new Positioned(
+      bottom: 210,
+      right: 10,
+      child: new IconButton(
+        color: Colors.black,
+        icon:  ImageIcon(AssetImage("assets/image/route.png"),size: 50),
+        onPressed: ()async{
+          print("aaa");
+          setState(() {
+            mapController.animateCamera(CameraUpdate.newLatLngBounds(bound, 0));
+            mapController.animateCamera(
+              CameraUpdate.zoomOut(),
+            );
+          });
+        },
+        iconSize: 30.0,
+      ),
+    );
     return Scaffold(
         key: scaffoldKey,
         drawer:Drawer(
@@ -246,10 +310,10 @@ class _MapContainerState extends State<MapContainer>{
         width: mapWidth,
            child:Stack(children:<Widget>[
              GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(
-          target: _initialPosition,
-          zoom: 17,
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+              target: _initialPosition,
+              zoom: 17,
         ),
           polylines: _polyLines,
 
@@ -272,7 +336,6 @@ class _MapContainerState extends State<MapContainer>{
               print(inputsVisible);
            }
             if(setFromMapDestination){
-
             }
             },
           //CAMERA MOVING//
@@ -320,8 +383,11 @@ class _MapContainerState extends State<MapContainer>{
              print("finish");
              final coordinates = new Coordinates(
                  _cameraPosition.latitude, _cameraPosition.longitude);
-             var addresses = await Geocoder.local.findAddressesFromCoordinates(
-                 coordinates);
+             var addresses = await Geocoder
+                 .local
+                 .findAddressesFromCoordinates(
+                 coordinates
+             );
              var first = addresses.first;
              setState(() {
                store['distenationController'].text =
@@ -330,14 +396,7 @@ class _MapContainerState extends State<MapContainer>{
                store['distenation'] = new Coordinates(
                    _cameraPosition.latitude, _cameraPosition.longitude);
              });
-             setState(() {
-               _markers.add(
-                   new Marker(
-                       markerId: new MarkerId("distenation"),
-                       position: _cameraPosition
-                   )
-               );
-             });
+
              print(store['distenationController'].text);
              print(inputsVisible);
            }
@@ -473,12 +532,12 @@ class _MapContainerState extends State<MapContainer>{
           visible: visibleSearchCurrent,
         ),//контейнер с поиском локации старта
              Visibility(
-          child: Container(
-           height: mapHeight,
-            width: mapWidth,
-            padding: EdgeInsets.all(50),
-            color: Colors.deepOrange,
-              child:ListView(
+               child: Container(
+                   height: mapHeight,
+                   width: mapWidth,
+                   padding: EdgeInsets.all(50),
+                   color: Colors.deepOrange,
+                   child:ListView(
                      children: <Widget>[
                        IconButton(
                          icon: Row(
@@ -489,54 +548,61 @@ class _MapContainerState extends State<MapContainer>{
                          ),
                          onPressed:(){
                            setState(() {
-                            visibleSearchDestination=false;
-                            setFromMapCurrent=false;
-                            setFromMapDestination=true;
-                            ready=true;
-                            resume=true;
-                            back=false;
-                            menu=false;
-                            inputsVisible=false;
+                             visibleSearchDestination=false;
+                             setFromMapCurrent=false;
+                             setFromMapDestination=true;
+                             ready=true;
+                             resume=true;
+                             back=false;
+                             menu=false;
+                             inputsVisible=false;
                            });
                          } ,
                        ),
-                            SearchMapPlaceWidget(
-                  apiKey: kGoogleApiKey,
-                  location: _initialPosition,
-                  radius: 30000,
-                  placeholder: "Enter your place",
-                  onSelected: (place) async {
-                  final geolocation = await place.geolocation;
-                  print(geolocation.coordinates);
-                  store['distenation'] = Coordinates(
-                      geolocation.coordinates.latitude,
-                      geolocation.coordinates.longitude);
-                  store['distenationController'].text = await place.description;
-                  mapController.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                          CameraPosition(
-                              target: geolocation.coordinates,
-                              zoom: 17)));
-                  setState(() {
-                    menu=false;
-                    setFromMapCurrent=false;
-                    currentPosition=false;
-                    if (store['current'] != "" && store['distenation'] != "") {
-                      print("errrrrr");
-                      sendRequest();
-                      ready=true;
-                    }
-                  });
-                visibleSearchDestination = false;
+                       SearchMapPlaceWidget(
+                         apiKey: kGoogleApiKey,
+                         location: _initialPosition,
+                         radius: 30000,
+                         placeholder: "Enter your place",
+                         onSelected: (place) async {
+                           final geolocation = await place.geolocation;
+                           print(geolocation.coordinates);
+                           store['distenation'] = Coordinates(
+                               geolocation.coordinates.latitude,
+                               geolocation.coordinates.longitude);
+                           store['distenationController'].text = await place.description;
+                           mapController.animateCamera(
+                               CameraUpdate.newCameraPosition(
+                                   CameraPosition(
+                                       target: geolocation.coordinates,
+                                       zoom: 17)));
+                           setState(() {
+                             back=false;
+                             resume=true;
+                             allRoute=true;
+                             menu=false;
+                             setFromMapCurrent=false;
+                             currentPosition=false;
+                             _cameraPosition=geolocation.coordinates;
+                             visibleSearchDestination = false;
+                             if (store['current'] != "" && store['distenation'] != "") {
+                               print("errrrrr");
+                               ready=false;
+                               sendRequest();
+                               zakaz=true;
+                             }
+                           });
+                           print(allRoute);
 
-              },
-            ),
-                          ],
-                      )
 
-          ),
-          visible: visibleSearchDestination,
-        ),//контейнер с поиском локации назначения
+                         },
+                       ),
+                     ],
+                   )
+
+               ),
+               visible: visibleSearchDestination,
+             ),//контейнер с поиском локации назначения
              Visibility(
           child: Positioned(
             child: Container(
@@ -567,11 +633,13 @@ class _MapContainerState extends State<MapContainer>{
                         ),
                       onTap: (){
                         setState(() {
+                          ready=false;
                           resume=true;
                           back=false;
                           menu=false;
                           visibleSearchDestination=true;
                         });
+                        print(allRoute);
                       },
                     ),
                   ),
@@ -598,6 +666,7 @@ class _MapContainerState extends State<MapContainer>{
                              ready=false;
                              resume=true;
                              back=false;
+                             allRoute=true;
                              setFromMapDestination=false;
                              currentPosition=false;
                              zakaz=true;
@@ -626,7 +695,7 @@ class _MapContainerState extends State<MapContainer>{
                  child: Container(
                    height: 200,
                    width: mapWidth,
-                   color: Colors.deepOrange,
+                   color: Colors.grey,
                    child: Column(
                      children: <Widget>[
                        Container(
@@ -636,75 +705,166 @@ class _MapContainerState extends State<MapContainer>{
                              scrollDirection: Axis.horizontal,
                              child: Row(
                                  children: <Widget>[
-                                   Container(
-                                     width: mapWidth/2,
-                                     child: Text("eeeee            "),
+                                   GestureDetector(
+                                     child: Container (
+                                       width: 200,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                         children: <Widget>[
+                                           Container(
+                                             width: 80,
+                                             child: Image.asset("assets/image/type3.png"),
+                                           ),
+                                           Container(
+                                             padding: EdgeInsets.only(top: 7,right: 10),
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                               children: <Widget>[
+                                                 Text("hechbeck"),
+                                                 Text("45\$")
+                                               ],
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
+                                     onTap:()=> print("hechbeck"),
                                    ),
-                                   Container(
-                                     width: mapWidth/2,
-                                     child: Text("eeeee            "),
+                                   GestureDetector(
+                                     child: Container (
+                                       width: 200,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                         children: <Widget>[
+                                           Container(
+                                             width: 80,
+                                             child: Image.asset("assets/image/type2.png"),
+                                           ),
+                                           Container(
+                                             padding: EdgeInsets.only(top: 7,right: 10),
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                               children: <Widget>[
+                                                 Text("sedan"),
+                                                 Text("55\$")
+                                               ],
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
+                                     onTap:()=> print("sedan"),
                                    ),
-                                   Container(
-                                     width: mapWidth/2,
-                                     child: Text("eeeee            "),
+                                   GestureDetector(
+                                     child: Container (
+                                       width: 200,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                         children: <Widget>[
+                                           Container(
+                                             width: 80,
+                                             child: Image.asset("assets/image/type3.png"),
+                                           ),
+                                           Container(
+                                             padding: EdgeInsets.only(top: 7,right: 10),
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                               children: <Widget>[
+                                                 Text("universal"),
+                                                 Text("65\$")
+                                               ],
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
+                                     onTap:()=> print("universal"),
                                    ),
-                                   Container(
-                                     width: mapWidth/2,
-                                     child: Text("eeeee            "),
-                                   ),
-                                   Container(
-                                     width: mapWidth/2,
-                                     child: Text("eeeee            "),
-                                   ),
+
                                  ]
                              )
                          ),
-                       ),
+                       ),//вибор типа машини
                        Container(
                          height: 50,
+                         padding: EdgeInsets.only(left: 20,right: 20),
                          decoration: BoxDecoration(
-                           border: Border(
-                               bottom: BorderSide(
-                                   color: Colors.white
-                               ),
-                             top: BorderSide(
-                               color: Colors.white
-                             )
-                           )
-                         ),
-                         child: Row(
-                           children: <Widget>[
-                             Text(
-                                 "45\$"
-                             ),
-                             Spacer(),
-                             Container(
-                               height: 30,
-                               child: FlatButton(
-                                 color: Colors.grey,
-                                 shape: RoundedRectangleBorder(
-                                     borderRadius: new BorderRadius.circular(18.0),
-                                     side: BorderSide(color: Colors.black)
+                             border: Border(
+                                 bottom: BorderSide(
+                                     color: Colors.white
                                  ),
-                                 child: Text(
-                                     "change price"
-                                 ),
-                                 onPressed: (){print("113");},
-                               ),
+                                 top: BorderSide(
+                                     color: Colors.white
+                                 )
                              )
-                           ],
                          ),
-                       ),
+                         child: GestureDetector(
+
+                           child: Row(
+                             children: <Widget>[
+                               Text(
+                                   "45\$"
+                               ),
+                               Spacer(),
+                               Container(
+                                 height: 30,
+                                 child: FlatButton(
+                                   color: Colors.grey,
+                                   shape: RoundedRectangleBorder(
+                                       borderRadius: new BorderRadius.circular(18.0),
+                                       side: BorderSide(color: Colors.black)
+                                   ),
+                                   child: Text(
+                                       "change price"
+                                   ),
+                                   onPressed: (){print("113");},
+                                 ),
+                               )
+                             ],
+                           ),
+                         ),
+                       ),//измение суми заказа
                        Container(
                          height: 50,
+                         padding: EdgeInsets.all(5),
                          child: Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                            children: <Widget>[
-                             Container(),
-                             Container(),
-                             Container(),
+                             Container(
+                               child: Center(
+                                 child: Column(
+                                   children: <Widget>[
+                                     Icon(Icons.attach_money),
+                                     Text("money")
+                                   ],
+                                 ),
+                               ),
+                             ),
+                             Container(
+                               child: Center(
+                                 child: Column(
+                                   children: <Widget>[
+                                     Icon(Icons.watch_later),
+                                     Text("now")
+                                   ],
+                                 ),
+                               ),
+                             ),
+                             Container(
+                               child: Center(
+                                 child: Column(
+                                   children: <Widget>[
+                                     Icon(Icons.playlist_add),
+                                     Text("respect")
+                                   ],
+                                 ),
+                               ),
+                             ),
                              ],
                          ),
-                       ),
+                       ),//вибор способа платежа, времени подачи машини, додавання побажання
                        Container(
                          height: 40,
                          width: mapWidth,
@@ -726,7 +886,7 @@ class _MapContainerState extends State<MapContainer>{
                              );
                            },
                          ),
-                       )
+                       ),//подтверджение заказа
                      ],
                    ),
                  ),
@@ -769,6 +929,7 @@ class _MapContainerState extends State<MapContainer>{
                   ),
                   onPressed: (){
                     setState(() {
+                      allRoute=false;
                       menu=true;
                       resume=false;
                       ready=false;
@@ -820,6 +981,7 @@ class _MapContainerState extends State<MapContainer>{
                   ),
                   onPressed: (){
                     setState(() {
+                      allRoute=false;
                       visibleSearchCurrent=false;
                       visibleSearchDestination=false;
                       back=false;
@@ -832,6 +994,10 @@ class _MapContainerState extends State<MapContainer>{
             ),
           ),
         ),//назад к вибору по маркеру
+             Visibility(
+               child:_allRoute,
+               visible: allRoute,
+             ),//весь маршрут
       ]
     )
       )
