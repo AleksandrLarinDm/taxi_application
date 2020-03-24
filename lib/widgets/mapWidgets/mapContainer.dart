@@ -98,6 +98,7 @@ class _MapContainerState extends State<MapContainer>{
     } else {
       bound = LatLngBounds(southwest: LatLng(store['distenation'].latitude,store['distenation'].longitude), northeast: LatLng(store['current'].latitude,store['current'].longitude));
     }
+    //
     setState(() {
       mapController.animateCamera(CameraUpdate.newLatLngBounds(bound, 0));
       mapController.animateCamera(
