@@ -34,7 +34,6 @@ class _NewUserState extends State<NewUser> {
                   ],
                 ),
                 ButtonNewUser(),
-                ScndTime()
               ],
             ),
           ],

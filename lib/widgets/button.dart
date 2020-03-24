@@ -53,8 +53,10 @@ class _ButtonLoginState extends State<ButtonLogin>{
             border: Border.all(color: Colors.white, width: 3.0)
         ),
         child: FlatButton(
+          padding: EdgeInsets.all(0),
           onPressed: () async{
             await codeResponse(store['code'], store['phone']);
+            print(store['status_v']);
             if(store['status_v'] == 200){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>MainWidget()));
             }

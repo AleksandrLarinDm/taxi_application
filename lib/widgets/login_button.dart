@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
 import 'package:http/http.dart' as http;
+import 'package:taxiapplication/screens/map_page.dart';
 
 class ScndTime extends StatefulWidget{
   @override
@@ -24,10 +25,8 @@ class _ScndTimeState extends State<ScndTime>{
             border: Border.all(color: Colors.white, width: 2.0)
         ),
         child: FlatButton(
-          onPressed: () async{
-              Future<String> sendCookie() async{
-                 final response = http.post(url, body: {'cookie': store['cookie']});
-              }
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> MapPage()));
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

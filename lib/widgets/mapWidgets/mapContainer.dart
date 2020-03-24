@@ -12,6 +12,7 @@ import 'package:search_map_place/search_map_place.dart';
 import 'package:taxiapplication/map_request.dart';
 import 'package:global_state/global_state.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:taxiapplication/screens/newuser.page.dart';
 
 
 const kGoogleApiKey = "AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
@@ -237,7 +238,7 @@ class _MapContainerState extends State<MapContainer>{
               ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Logout'),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {Navigator.push(context, MaterialPageRoute(builder: (context)=>NewUser()))},
               ),
             ],
           ),
