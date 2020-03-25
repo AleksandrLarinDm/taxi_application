@@ -357,18 +357,21 @@ class _MapContainerState extends State<MapContainer>{
              print("finish");
              final coordinates = new Coordinates(
                  _cameraPosition.latitude, _cameraPosition.longitude);
-             var addresses = await Geocoder.local.findAddressesFromCoordinates(
+             print(coordinates);
+             var addresses = await Geocoder
+                 .local
+                 .findAddressesFromCoordinates(
                  coordinates);
              var first = addresses.first;
              setState(() {
+               inputsVisible = true;
+
                store['currentController'].text =
                    first.addressLine.split(",")[0] + ", " +
                        first.addressLine.split(",")[1];
                store['current'] = new Coordinates(
                    _cameraPosition.latitude, _cameraPosition.longitude);
-               inputsVisible = true;
-             });
-             setState(() {
+
                _markers.add(
                    new Marker(
                        markerId: new MarkerId("current"),
@@ -381,11 +384,12 @@ class _MapContainerState extends State<MapContainer>{
              print(inputsVisible);
            }
            if(setFromMapDestination){
-             print("finish");
+             print("finish destination");
              final coordinates = new Coordinates(
                  _cameraPosition.latitude, _cameraPosition.longitude);
-             var addresses = await Geocoder
-                 .local
+             print(coordinates);
+
+             var addresses = await Geocoder.local
                  .findAddressesFromCoordinates(
                  coordinates
              );
