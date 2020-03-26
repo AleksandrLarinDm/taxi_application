@@ -16,9 +16,9 @@ class _SubmitPageState extends State<SubmitPage>{
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Colors.white, Colors.red]),
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.yellow, Colors.yellowAccent]),
           ),
           child: ListView(
             children: <Widget>[

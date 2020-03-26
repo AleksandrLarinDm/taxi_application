@@ -12,13 +12,6 @@ class ButtonLogin extends StatefulWidget{
 }
 
 class _ButtonLoginState extends State<ButtonLogin>{
-  void updateCookie(http.Response response){
-    String rawCookie = response.headers['set-cookie'];
-    if(rawCookie != null){
-      int index = rawCookie.indexOf(';');
-      response.headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-    }
-  }
   Future _showAlert (BuildContext context) async {
     return showDialog(
         context: context,
@@ -36,9 +29,6 @@ class _ButtonLoginState extends State<ButtonLogin>{
     var response = await http.post(Uri.encodeFull(url), body: {"code":"$code", "phone":"$phone"});
     int status_v = response.statusCode;
     store['status_v'] = status_v;
-    var cookie = updateCookie(response);
-    print(jsonDecode(response.body));
-    print(response.statusCode);
   }
   @override
   Widget build(BuildContext context) {

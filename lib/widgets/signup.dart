@@ -9,13 +9,13 @@ class _SingUpState extends State<SingUp> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 60, left: 20),
+      padding: const EdgeInsets.only(top: 70, left: 20),
       child: RotatedBox(
           quarterTurns: -1,
           child: Text(
-            'Welcome',
+            'WELCOME',
             style: TextStyle(
-              color: Colors.black38,
+              color: Colors.black,
               fontSize: 38,
               fontWeight: FontWeight.w900,
             ),

@@ -20,22 +20,24 @@ class _PasswordInputState extends State<PasswordInput> {
           controller: myController,
           keyboardType: TextInputType.number,
           style: TextStyle(
-            color: Color.fromRGBO(246, 238, 223, 1),
+            color: Colors.black,
           ),
           obscureText: true,
           decoration: InputDecoration(
+            icon: new Icon(Icons.confirmation_number, color: Colors.black),
             enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white)
+                borderSide: BorderSide(color: Colors.black)
             ),
             labelText: 'Enter code here',
             labelStyle: TextStyle(
-              color: Color.fromRGBO(246, 238, 223, 1),
+              color: Colors.black,
             ),
           ),
           onChanged: (text){
             code = myController.text;
             store['code'] = text.toString();
           },
+
         ),
       ),
     );

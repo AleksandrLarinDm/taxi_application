@@ -19,9 +19,9 @@ class _NewUserState extends State<NewUser> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.blue]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.yellow, Colors.yellowAccent]),
         ),
         child: ListView(
           children: <Widget>[
@@ -34,6 +34,7 @@ class _NewUserState extends State<NewUser> {
                   ],
                 ),
                 ButtonNewUser(),
+                ScndTime()
               ],
             ),
           ],

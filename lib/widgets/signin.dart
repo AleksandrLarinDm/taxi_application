@@ -9,17 +9,18 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 60, left: 10),
+      padding: const EdgeInsets.only(top: 50, left: 10),
       child: RotatedBox(
           quarterTurns: -1,
           child: Text(
-            'Sing in',
+            'SIGN IN',
             style: TextStyle(
-              color: Colors.black38,
+              color: Colors.black,
               fontSize: 38,
               fontWeight: FontWeight.w900,
             ),
-          )),
+          )
+      ),
     );
   }
 }

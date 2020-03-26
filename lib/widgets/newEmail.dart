@@ -12,7 +12,7 @@ class _NewEmailState extends State<NewEmail>{
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20, left: 50, right: 50),
+      padding: const EdgeInsets.only(top: 40, left: 50, right: 50),
       child: Container(
         height: 60,
         width: MediaQuery.of(context).size.width,
@@ -21,16 +21,17 @@ class _NewEmailState extends State<NewEmail>{
           controller: myController,
           keyboardType: TextInputType.numberWithOptions(),
           style: TextStyle(
-            color: Color.fromRGBO(246, 238, 223, 1)
+            color: Colors.black
           ),
           decoration: InputDecoration(
+            icon: new Icon(Icons.phone, color: Colors.black,),
               enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white)
+                  borderSide: BorderSide(color: Colors.black)
               ),
-            fillColor: Color.fromRGBO(245, 123, 81, 1),
+            fillColor: Colors.black,
             labelText: 'Mobile phone',
             labelStyle: TextStyle(
-              color: Color.fromRGBO(246, 238, 223, 1)
+              color: Colors.black
             )
           ),
           onChanged: (text){

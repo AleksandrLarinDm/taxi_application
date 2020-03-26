@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextOld extends StatefulWidget {
@@ -9,27 +10,18 @@ class _TextOldState extends State<TextOld> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0, left: 10.0),
+      padding: const EdgeInsets.only(top: 60.0, left: 50.0),
       child: Container(
-        height: 200,
+        padding: EdgeInsets.only(top: 20),
         width: 200,
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 60,
-            ),
-            Center(
-              child: Text(
-                'We are glad\nto see you again!',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.black38,
-                ),
-              ),
-            ),
-          ],
+        height: 200,
+        decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white
         ),
-      ),
+        alignment: Alignment.center,
+        child: Image.asset('assets/taxi.png'),
+    )
     );
   }
 }

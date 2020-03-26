@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taxiapplication/widgets/buttonOld.dart';
 import 'package:taxiapplication/widgets/newEmail.dart';
 import 'package:taxiapplication/widgets/signin.dart';
 import 'package:taxiapplication/widgets/textOld.dart';
@@ -15,9 +16,9 @@ class _oldUserState extends State<oldUser>{
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.red]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.yellow, Colors.yellowAccent]),
         ),
         child: ListView(
           children: <Widget>[
@@ -29,8 +30,8 @@ class _oldUserState extends State<oldUser>{
                     TextOld()
                   ],
                 ),
-                NewEmail()
-
+                NewEmail(),
+                ButtonOld()
               ],
             )
           ],

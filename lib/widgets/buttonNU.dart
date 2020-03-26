@@ -4,6 +4,7 @@ import 'package:global_state/global_state.dart';
 import 'package:taxiapplication/screens/newuser.page.dart';
 import 'package:taxiapplication/screens/submit.page.dart';
 import 'package:http/http.dart' as http;
+import 'package:taxiapplication/widgets/customAlert.dart';
 
 class ButtonNewUser extends StatefulWidget {
   @override
@@ -16,9 +17,9 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
         context: context,
         child: new AlertDialog(
           title: new Text('Ooops...'),
-          content: new Text('User already exists!'),
+          content: new Text('Something went wrong'),
           actions: <Widget>[
-            new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("Ok"))
+            new FlatButton(onPressed: () => Navigator.pop(context), child: new Text("OK"))
           ],
         )
     );
@@ -33,7 +34,6 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
     print(store['status']);
   }
   Map<String, String> cookies = {};
-
   Map<String, String> _updateCookie(http.Response response){
     Map<String, String> globalcookie = {};
     String allSetCookie = response.headers['set-cookie'];
@@ -86,39 +86,41 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 60, right: 50, left: 50),
-      child: Container(
-        alignment: Alignment.center,
-        height: 90,
-        width: MediaQuery.of(context).size.width,
-        child: FlatButton(
-          color: Colors.white,
-          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-          padding: const EdgeInsets.only(top:40),
-          focusColor: Colors.white,
-          onPressed: () async{
-            await getSession();
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>SubmitPage()));
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(
-                'Sign Up',
-                style: TextStyle(
-                  color: Colors.lightBlueAccent,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
+      padding: const EdgeInsets.only(top: 50, right: 50, left: 50),
+        child: ButtonTheme(
+          height: 70,
+          child: FlatButton(
+            color: Colors.white,
+            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),side: BorderSide(color: Colors.black, width: 2)),
+            focusColor: Colors.white,
+            onPressed: () async{
+              //if(store['status'] == 200){
+                //await getSession();
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>SubmitPage()));
+              //}
+              //else{
+                //CustomAlert();
+              //}
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'SIGN UP',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward,
-                color: Colors.lightBlueAccent,
-              ),
-            ],
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.black,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
     );
   }
 }

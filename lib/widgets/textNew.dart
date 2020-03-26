@@ -9,27 +9,16 @@ class _TextNewState extends State<TextNew> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0, left: 45.0),
-      child: Container(
-        height: 200,
-        width: 200,
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.bottomLeft,
-              height: 80,
-            ),
-            Center(
-              child: Text(
-                '   Welcome\nto White taxi!',
-                style: TextStyle(
-                  fontSize: 34,
-                  color: Colors.black38,
-                ),
-              ),
-            ),
-          ],
-        ),
+      padding: const EdgeInsets.only(top: 70.0, left: 40.0),
+        child: Container(
+          width: 200,
+          height: 200,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white
+          ),
+          alignment: Alignment.center,
+          child: Image.asset('assets/taxi.png'),
       ),
     );
   }
