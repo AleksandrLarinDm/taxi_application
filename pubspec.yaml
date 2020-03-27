@@ -39,6 +39,8 @@ flutter:
     - assets/image/type1.png
     - assets/image/type2.png
     - assets/image/type3.png
+    - assets/image/type4.png
+    - assets/image/type5.png
     - assets/image/taxi.png
     - assets/image/distenation.png
     - assets/image/current.png

@@ -20,6 +20,9 @@ void main() {
   store['distenationController']=new TextEditingController();
   store['status']=0;
   store['apikey']="AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
+  store['distance']=0.0;
+  store['url']="http://192.168.223.102:3000/order/get/price";
+  store['car_type']=["","","","",""];
   ClassBuilder.registerClasses();
   runApp(MyApp());
 }

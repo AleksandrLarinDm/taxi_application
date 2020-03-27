@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,7 @@ import 'package:taxiapplication/map_request.dart';
 import 'package:global_state/global_state.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
 
 
 const kGoogleApiKey = "AIzaSyBR2yf_lUiNSp44gxeQGNdS3U-4GUKho_U";
@@ -80,31 +82,36 @@ class _MapContainerState extends State<MapContainer>{
     createRoute(route);
     _addMarker("current");
     _addMarker("distenation");
-     bound = LatLngBounds(
-        southwest: LatLng(store['current'].latitude,store['current'].longitude),
-        northeast: LatLng(store['distenation'].latitude,store['distenation'].longitude)
-    );
-    if (store['distenation'].latitude > store['current'].latitude &&
-        store['distenation'].longitude > store['current'].longitude) {
-      bound = LatLngBounds(southwest: LatLng(store['current'].latitude,store['current'].longitude), northeast: LatLng(store['distenation'].latitude,store['distenation'].longitude));
-    } else if (store['distenation'].longitude > store['current'].longitude) {
-      bound = LatLngBounds(
-          southwest: LatLng(store['distenation'].latitude, store['current'].longitude),
-          northeast: LatLng(store['current'].latitude, store['distenation'].longitude));
-    } else if (store['distenation'].latitude > store['current'].latitude) {
-      bound = LatLngBounds(
-          southwest: LatLng(store['current'].latitude, store['distenation'].longitude),
-          northeast: LatLng(store['distenation'].latitude, store['current'].longitude));
-    } else {
-      bound = LatLngBounds(southwest: LatLng(store['distenation'].latitude,store['distenation'].longitude), northeast: LatLng(store['current'].latitude,store['current'].longitude));
-    }
-    //
-    setState(() {
-      mapController.animateCamera(CameraUpdate.newLatLngBounds(bound, 0));
-      mapController.animateCamera(
-        CameraUpdate.zoomOut(),
-      );
+    print("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
+        "&origins="+store['current'].latitude.toString()+","+store['current'].longitude.toString()+
+        "&destinations="+store['distenation'].latitude.toString()+","+store['distenation'].longitude.toString()+
+        "&key="+kGoogleApiKey);
+    var responce= await http.get("https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial"
+        "&origins="+store['current'].latitude.toString()+","+store['current'].longitude.toString()+
+        "&destinations="+store['distenation'].latitude.toString()+","+store['distenation'].longitude.toString()+
+        "&key="+kGoogleApiKey);
+    if(responce.statusCode==200) {
+      setState(() {
+      store['distance']=json
+          .decode(
+          responce
+              .body)
+      ['rows'][0]
+      ['elements'][0]
+      ['distance']['value'];
+      print(store['distance']);
     });
+      var body = { "origins":store['current'].toString(),
+          "destination":store['distenation'].toString(),
+          "distance":store['distance'].toString()
+        };
+      print(body);
+     var responce_43= await http
+          .post(Uri.encodeFull(store['url']), body: body, headers: {"Accept":"application/json"});
+        //print(json.decode(responce_43.body));
+        print((responce_43.body));
+
+    }
   }
 
   void createRoute(String encondedPoly) {
@@ -124,7 +131,6 @@ class _MapContainerState extends State<MapContainer>{
     ui.FrameInfo fi = await codec.getNextFrame();
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
   }
-
 
   void _addMarker( String address)async {
     final Uint8List distenation = await getBytesFromAsset('assets/image/'+address+'.png', 100);
@@ -718,7 +724,7 @@ class _MapContainerState extends State<MapContainer>{
                                          children: <Widget>[
                                            Container(
                                              width: 80,
-                                             child: Image.asset("assets/image/type3.png"),
+                                             child: Image.asset("assets/image/type1.png"),
                                            ),
                                            Container(
                                              padding: EdgeInsets.only(top: 7,right: 10),
@@ -727,7 +733,7 @@ class _MapContainerState extends State<MapContainer>{
 
                                                children: <Widget>[
                                                  Text("hechbeck"),
-                                                 Text("45\$")
+                                                 Text(store['car_type'][0],style: TextStyle(fontWeight: FontWeight.bold))
                                                ],
                                              ),
                                            )
@@ -753,7 +759,7 @@ class _MapContainerState extends State<MapContainer>{
                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                children: <Widget>[
                                                  Text("sedan"),
-                                                 Text("55\$")
+                                                 Text(store['car_type'][1],style: TextStyle(fontWeight: FontWeight.bold))
                                                ],
                                              ),
                                            )
@@ -777,8 +783,58 @@ class _MapContainerState extends State<MapContainer>{
                                              child: Column(
                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                children: <Widget>[
+                                                 Text("coupe"),
+                                                 Text(store['car_type'][2],style: TextStyle(fontWeight: FontWeight.bold))
+                                               ],
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
+                                     onTap:()=> print("universal"),
+                                   ),
+                                   GestureDetector(
+                                     child: Container (
+                                       width: 200,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                         children: <Widget>[
+                                           Container(
+                                             width: 80,
+                                             child: Image.asset("assets/image/type4.png"),
+                                           ),
+                                           Container(
+                                             padding: EdgeInsets.only(top: 7,right: 10),
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                               children: <Widget>[
                                                  Text("universal"),
-                                                 Text("65\$")
+                                                 Text(store['car_type'][3],style: TextStyle(fontWeight: FontWeight.bold))
+                                               ],
+                                             ),
+                                           )
+                                         ],
+                                       ),
+                                     ),
+                                     onTap:()=> print("universal"),
+                                   ),
+                                   GestureDetector(
+                                     child: Container (
+                                       width: 200,
+                                       child: Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                         children: <Widget>[
+                                           Container(
+                                             width: 80,
+                                             child: Image.asset("assets/image/type5.png"),
+                                           ),
+                                           Container(
+                                             padding: EdgeInsets.only(top: 7,right: 10),
+                                             child: Column(
+                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                               children: <Widget>[
+                                                 Text("minivan"),
+                                                 Text(store['car_type'][4],style: TextStyle(fontWeight: FontWeight.bold))
                                                ],
                                              ),
                                            )
@@ -810,7 +866,8 @@ class _MapContainerState extends State<MapContainer>{
                            child: Row(
                              children: <Widget>[
                                Text(
-                                   "45\$"
+                                   "\$ 45",
+                                   style: TextStyle(fontSize: 20)
                                ),
                                Spacer(),
                                Container(
@@ -870,16 +927,18 @@ class _MapContainerState extends State<MapContainer>{
                              ],
                          ),
                        ),//вибор способа платежа, времени подачи машини, додавання побажання
-                       Container(
-                         height: 40,
-                         width: mapWidth,
-                         color: Colors.yellowAccent,
-                         child: GestureDetector(
-                           child: Center(
-                             child: Text(
-                                 "Order"
-                             ),
 
+                       GestureDetector(
+                           child:Container(
+                             height: 40,
+                             width: mapWidth,
+                             color: Colors.redAccent,
+                             child:Center(
+                                 child: Text(
+                                     "Order",style: TextStyle(fontSize: 20),
+                                 ),
+
+                               ),
                            ),
 
                            onTap: (){
@@ -890,7 +949,6 @@ class _MapContainerState extends State<MapContainer>{
                                  )
                              );
                            },
-                         ),
                        ),//подтверджение заказа
                      ],
                    ),
