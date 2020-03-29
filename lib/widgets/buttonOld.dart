@@ -14,10 +14,10 @@ class _ButtonOldState extends State<ButtonOld>{
     return Padding(
       padding: EdgeInsets.only(top: 40, left: 50, right: 50),
       child: ButtonTheme(
-        height: 70,
+        height: 50,
         child: FlatButton(
           shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0), side: BorderSide(color: Colors.black, width: 2)),
-          color: Colors.white,
+          color: Color.fromRGBO(31,30,34, 3),
           padding: EdgeInsets.all(0),
           onPressed: (){
             // TODO: add login method
@@ -28,12 +28,12 @@ class _ButtonOldState extends State<ButtonOld>{
             children: <Widget>[
               Text(
                 'CONTINUE',
-                style: TextStyle(color: Colors.black,fontSize: 26,
+                style: TextStyle(color: Color.fromRGBO(150, 150, 150, 3),fontSize: 26,
                     fontWeight: FontWeight.w500),
               ),
               Icon(
                   Icons.arrow_forward,
-                  color: Colors.black
+                  color: Color.fromRGBO(150, 150, 150, 3)
               )
             ],
           ),

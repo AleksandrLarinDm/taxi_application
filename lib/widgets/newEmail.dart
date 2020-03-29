@@ -12,7 +12,7 @@ class _NewEmailState extends State<NewEmail>{
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 40, left: 50, right: 50),
+      padding: const EdgeInsets.only(top: 70, left: 50, right: 50),
       child: Container(
         height: 60,
         width: MediaQuery.of(context).size.width,

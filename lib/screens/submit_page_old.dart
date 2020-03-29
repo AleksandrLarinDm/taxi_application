@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:taxiapplication/widgets/label.dart';
 import 'package:taxiapplication/widgets/login_confirmation.dart';
 import 'package:taxiapplication/widgets/password.dart';
 import 'package:taxiapplication/widgets/signin.dart';
+import 'package:taxiapplication/widgets/textNew.dart';
 import 'package:taxiapplication/widgets/textOld.dart';
 
 class SubmitOld extends StatefulWidget{
@@ -14,10 +16,7 @@ class _SubmitOldState extends State<SubmitOld>{
     return Scaffold(
         body: Container(
           decoration: BoxDecoration(
-          gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.yellow, Colors.yellowAccent]),
+              color: Color.fromRGBO(255, 220, 82, 1)
         ),
           child: ListView(
             children: <Widget>[
@@ -25,8 +24,12 @@ class _SubmitOldState extends State<SubmitOld>{
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      SignIn(),
-                      TextOld()
+                      Label()
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      TextNew()
                     ],
                   ),
                   PasswordInput(),

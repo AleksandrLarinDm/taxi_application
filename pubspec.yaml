@@ -17,6 +17,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  flutter_svg: ^0.17.3+1
   http: ^0.12.0+4
   kf_drawer: ^1.1.2
   class_builder: ^1.0.1
@@ -48,8 +49,12 @@ dev_dependencies:
 flutter:
   assets:
     - assets/map_style.txt
-    - assets/taxi.png
+    - assets/taxi.svg
     - assets/alert.png
+    - assets/money.png
+    - assets/pin.png
+    - assets/slippers.png
+    - assets/speed.png
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -69,7 +74,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+    - family: Verdana
+      fonts:
+        - asset: assets/Verdana.ttf
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

@@ -14,12 +14,12 @@ class _ScndTimeState extends State<ScndTime>{
   Widget build(BuildContext context) {
     String url = "http://192.168.223.102:3000/user";
     return Padding(
-      padding: EdgeInsets.only(top: 40, right: 50, left: 50),
+      padding: EdgeInsets.only(top: 5, right: 50, left: 50),
       child: ButtonTheme(
-        height: 70.0,
+        height: 50.0,
         child: FlatButton(
-          color: Colors.white,
-          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0), side: BorderSide(color: Colors.black, width: 2.0)),
+          color: Colors.transparent,
+          shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
           focusColor: Colors.white,
           onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (context)=> oldUser()));

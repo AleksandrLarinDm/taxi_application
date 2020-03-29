@@ -86,11 +86,11 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 50, right: 50, left: 50),
+      padding: const EdgeInsets.only(top: 30, right: 50, left: 50),
         child: ButtonTheme(
-          height: 70,
+          height: 50,
           child: FlatButton(
-            color: Colors.white,
+            color: Color.fromRGBO(31,30,34, 3),
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),side: BorderSide(color: Colors.black, width: 2)),
             focusColor: Colors.white,
             onPressed: () async{
@@ -108,14 +108,14 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
                 Text(
                   'SIGN UP',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 26,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 Icon(
                   Icons.arrow_forward,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ],
             ),

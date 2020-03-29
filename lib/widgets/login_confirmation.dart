@@ -12,9 +12,9 @@ class _LoginConfirmState extends State<LoginConfirm>{
     return Padding(
       padding: EdgeInsets.only(top: 40, right: 50, left: 50),
       child: ButtonTheme(
-        height: 70.0,
+        height: 50.0,
         child: FlatButton(
-          color: Colors.white,
+          color: Color.fromRGBO(31,30,34, 3),
           shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0), side: BorderSide(color: Colors.black, width: 2.0)),
           focusColor: Colors.white,
           onPressed: (){
@@ -26,14 +26,14 @@ class _LoginConfirmState extends State<LoginConfirm>{
               Text(
                 "CONFIRM",
                 style: TextStyle(
-                    color: Colors.black,
+                    color: Color.fromRGBO(150, 150, 150, 3),
                     fontSize: 26,
                     fontWeight: FontWeight.w500
                 ),
               ),
               Icon(
                   Icons.done,
-                  color: Colors.black
+                  color: Color.fromRGBO(150, 150, 150, 3)
               )
             ],
           ),
