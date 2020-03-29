@@ -14,9 +14,6 @@ class MapPage extends StatefulWidget {
 }
 
 class MapPageState extends State<MapPage> {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
