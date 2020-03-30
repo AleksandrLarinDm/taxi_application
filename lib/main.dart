@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
 
-      home: MapPage(),
+      home: Wrapper(),
         debugShowCheckedModeBanner: false
     );
   }

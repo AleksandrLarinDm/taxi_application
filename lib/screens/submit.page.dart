@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:taxiapplication/widgets/label.dart';
+import 'package:taxiapplication/widgets/newEmail.dart';
+import 'package:taxiapplication/widgets/newName.dart';
+import 'package:taxiapplication/widgets/registerbutton.dart';
 import 'package:taxiapplication/widgets/signup.dart';
 import 'package:taxiapplication/widgets/textNew.dart';
 import 'package:taxiapplication/widgets/password.dart';
@@ -15,10 +19,7 @@ class _SubmitPageState extends State<SubmitPage>{
       return Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Colors.yellow, Colors.yellowAccent]),
+              color: Color.fromRGBO(255, 220, 82, 1)
           ),
           child: ListView(
             children: <Widget>[
@@ -26,12 +27,17 @@ class _SubmitPageState extends State<SubmitPage>{
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      SingUp(),
+                      Label()
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
                       TextNew(),
                     ],
                   ),
-                  PasswordInput(),
-                  ButtonLogin()
+                  NewName(),
+                  NewEmail(),
+                  RegisterButton()
                 ],
               )
             ],

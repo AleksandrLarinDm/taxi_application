@@ -33,43 +33,42 @@ class _ButtonLoginState extends State<ButtonLogin>{
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 40, right: 50, left: 200),
+      padding: EdgeInsets.only(top: 20, right: 50, left: 50),
       child: Container(
         alignment: Alignment.bottomRight,
-        height: 50,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white, width: 3.0)
-        ),
-        child: FlatButton(
-          padding: EdgeInsets.all(0),
-          onPressed: () async{
-            await codeResponse(store['code'], store['phone']);
-            print(store['status_v']);
-            if(store['status_v'] == 200){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>MainWidget()));
-            }
-            else{
-              _showAlert(context);
-            }
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Register",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700
+        child: ButtonTheme(
+          height: 50.0,
+          child: FlatButton(
+            color: Color.fromRGBO(31,30,34, 3),
+            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0), side: BorderSide(color: Colors.black, width: 2.0)),
+            onPressed: () async{
+              await codeResponse(store['code'], store['phone']);
+              print(store['status_v']);
+              if(store['status_v'] == 200){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>MapPage()));
+              }
+              else{
+                _showAlert(context);
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "REGISTER",
+                  style: TextStyle(
+                      color: Color.fromRGBO(150, 150, 150, 3),
+                      fontSize: 26,
+                      fontWeight: FontWeight.w500
+                  ),
                 ),
-              ),
-              Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white
-              )
-            ],
+                Icon(
+                    Icons.arrow_forward,
+                    color: Color.fromRGBO(150, 150, 150, 3),
+                )
+              ],
+            ),
           ),
         ),
       ),
