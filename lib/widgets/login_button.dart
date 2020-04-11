@@ -12,7 +12,6 @@ class ScndTime extends StatefulWidget{
 class _ScndTimeState extends State<ScndTime>{
   @override
   Widget build(BuildContext context) {
-    String url = "http://192.168.223.102:3000/user";
     return Padding(
       padding: EdgeInsets.only(top: 5, right: 50, left: 50),
       child: ButtonTheme(

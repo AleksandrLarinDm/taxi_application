@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taxiapplication/widgets/label.dart';
 import 'package:taxiapplication/widgets/login_button.dart';
+import 'package:taxiapplication/widgets/registerbutton.dart';
 import 'package:taxiapplication/widgets/signup.dart';
 import 'package:taxiapplication/widgets/textHint.dart';
 import 'package:taxiapplication/widgets/textNew.dart';
@@ -40,7 +41,7 @@ class _NewUserState extends State<NewUser> {
                     TextHint()
                   ],
                 ),
-                ButtonNewUser(),
+                RegisterButton(),
                 ScndTime()
               ],
             ),

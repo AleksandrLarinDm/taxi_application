@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taxiapplication/widgets/buttonNU.dart';
 import 'package:taxiapplication/widgets/label.dart';
 import 'package:taxiapplication/widgets/newEmail.dart';
 import 'package:taxiapplication/widgets/newName.dart';
@@ -37,7 +38,7 @@ class _SubmitPageState extends State<SubmitPage>{
                   ),
                   NewName(),
                   NewEmail(),
-                  RegisterButton()
+                  ButtonNewUser()
                 ],
               )
             ],

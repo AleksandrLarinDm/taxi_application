@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:global_state/global_state.dart';
+import 'package:taxiapplication/screens/confirmationpage.dart';
 import 'package:taxiapplication/screens/newuser.page.dart';
 import 'package:taxiapplication/screens/submit.page.dart';
 import 'package:http/http.dart' as http;
@@ -25,7 +26,7 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
     );
   }
 
-  String url = "http://192.168.223.102:3000/user";
+  String url = "http://192.168.223.105:3000/auth/signup";
   Future<String> makeRequest(String phonenumber, String name) async {
     final response = await http.post(Uri.encodeFull(url), body: {"phone":"$phonenumber","name":"$name"});
     print(response.body);
@@ -70,6 +71,7 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
   }
 
   Future<String> getSession() async {
+    String cookie = "";
     Map<String, String> headers = {};
     if (store['cookie'] != null){
       headers['cookie'] = _generateCookieHeader({ 'connect.sid': store['cookie']['connect.sid'] });
@@ -79,6 +81,7 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
       var cookie = _updateCookie(response);
       if (cookie['connect.sid'] != null) {
         store['cookie'] = { 'connect.sid': cookie['connect.sid'] };
+        cookie = store['cookie'];
       }
     }
   }
@@ -94,19 +97,20 @@ class _ButtonNewUserState extends State<ButtonNewUser> {
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0),side: BorderSide(color: Colors.black, width: 2)),
             focusColor: Colors.white,
             onPressed: () async{
-              //if(store['status'] == 200){
-                //await getSession();
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>SubmitPage()));
-              //}
-              //else{
-                //CustomAlert();
-              //}
+              await makeRequest(store['phone'], store['name']);
+              if(store['status'] == 200){
+                await getSession();
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ConfirmationPage()));
+              }
+              else{
+                _showAlert(context);
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'SIGN UP',
+                  'CONTINUE',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 26,

@@ -19,7 +19,7 @@ class _NewNameState extends State<NewName>{
         child: TextField(
           controller: myController,
           style: TextStyle(
-            color: Color.fromRGBO(246, 238, 223, 1)
+            color: Colors.black,
           ),
           decoration: InputDecoration(
             icon: new Icon(Icons.account_circle, color: Colors.black),

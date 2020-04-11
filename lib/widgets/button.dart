@@ -24,10 +24,11 @@ class _ButtonLoginState extends State<ButtonLogin>{
         )
     );
   }
-  String url = "https://pure-taiga-88169.herokuapp.com/auth/verify";
+  String url = "http://192.168.223.105:3000/auth/verify";
   Future<String> codeResponse (String code, String phone) async{
     var response = await http.post(Uri.encodeFull(url), body: {"code":"$code", "phone":"$phone"});
     int status_v = response.statusCode;
+    print(response.body);
     store['status_v'] = status_v;
   }
   @override
